@@ -17,6 +17,9 @@ public final class R {
         public static final int Button01=0x7f050001;
         public static final int Button02=0x7f050002;
         public static final int Button03=0x7f050003;
+        public static final int CheckBox01=0x7f050004;
+        public static final int CheckBox02=0x7f050005;
+        public static final int SeekBar01=0x7f050006;
         public static final int TextView01=0x7f050000;
     }
     public static final class layout {
