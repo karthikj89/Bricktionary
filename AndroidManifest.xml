@@ -11,6 +11,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity android:name=".PlayActivity">
+        </activity>
+
+		<activity android:name=".SettingsActivity">
+        </activity>
+        
+        <activity android:name=".HighScoreActivity">
+        </activity>
+        
 
     </application>
     <uses-sdk android:minSdkVersion="4" />

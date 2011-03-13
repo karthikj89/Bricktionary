@@ -4,9 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    />
+<Button android:text="Play" android:id="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<Button android:text="Settings" android:id="@+id/Button02" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<Button android:text="High Scores" android:id="@+id/Button03" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 </LinearLayout>
