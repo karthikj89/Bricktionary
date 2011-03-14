@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -35,8 +36,10 @@ public class PlayActivity extends Activity {
 			_thread = new ActionThread(getHolder(), this);
 			GraphicObject square = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.square));
 			GraphicObject triangle = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.triangle));
+			GraphicObject triangle2 = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.triangle));
 			_toolbox.add(square);
 			_toolbox.add(triangle);
+			_toolbox.add(triangle2);
 			updateToolbox();
 			setFocusable(true);
 		}
@@ -97,26 +100,31 @@ public class PlayActivity extends Activity {
 			canvas.drawColor(Color.WHITE);
 			Bitmap bitmap;
 			GraphicObject.Coordinates coords;
+			Paint paint = new Paint();
+			paint.setColor(Color.BLACK); //Draw the line between the toolbox and play area
+            canvas.drawLine(0, 50, 350, 50, paint);
 			if (! _toolbox.isEmpty()){
-				for (GraphicObject graphic : _toolbox){
+				for (GraphicObject graphic : _toolbox){ //Draw all objects in the toolbox
 					coords = graphic.getCoordinates();
 					bitmap = graphic.getGraphic();
 					canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
 				}
 			}
 			if (! _board.isEmpty()){
-				for (GraphicObject graphic : _board) {
+				for (GraphicObject graphic : _board) { //Draw all objects on the board
 					bitmap = graphic.getGraphic();
 					coords = graphic.getCoordinates();
 					canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
 				}
 			}
-            // draw current graphic at last...
+            // Draw the object that is being dragged (if there is one)
             if (_currentGraphic != null) {
                 bitmap = _currentGraphic.getGraphic();
                 coords = _currentGraphic.getCoordinates();
                 canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
             }
+            
+            
         }
 		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             // TODO Auto-generated method stub
