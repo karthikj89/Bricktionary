@@ -35,12 +35,9 @@ public class PlayActivity extends Activity {
 			_thread = new ActionThread(getHolder(), this);
 			GraphicObject square = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.square));
 			GraphicObject triangle = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.triangle));
-			square.getCoordinates().setX(10);
-			square.getCoordinates().setY(10);
 			_toolbox.add(square);
-			triangle.getCoordinates().setX(50);
-			triangle.getCoordinates().setY(10);
 			_toolbox.add(triangle);
+			updateToolbox();
 			setFocusable(true);
 		}
 		
@@ -54,26 +51,31 @@ public class PlayActivity extends Activity {
 					for (GraphicObject g : _toolbox){
 						if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
 							_currentGraphic = g;
+							_toolbox.remove(g);
+							break;
 						}
 					}
 					for (GraphicObject g : _board){
 						if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
 							_currentGraphic = g;
+							_board.remove(g);
+							break;
 						}
 					}
 				} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 					if (_currentGraphic != null){
-						_currentGraphic.getCoordinates().setX(Math.round((event.getX() - _currentGraphic.getGraphic().getWidth() / 2)/10)*10);
-						_currentGraphic.getCoordinates().setY(Math.round((event.getY() - _currentGraphic.getGraphic().getHeight() / 2)/10)*10);
+						_currentGraphic.getCoordinates().setX((int)event.getX() - _currentGraphic.getGraphic().getWidth() / 2);
+						_currentGraphic.getCoordinates().setY((int)event.getY() - _currentGraphic.getGraphic().getHeight() / 2);
 					}
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (_currentGraphic != null){
-                    	if (_toolbox.contains(_currentGraphic) && event.getY() > 50){
-                    		_toolbox.remove(_currentGraphic);
+                    	if (event.getY() > 50){
+                    		_currentGraphic.getCoordinates().setX(Math.round((event.getX() - _currentGraphic.getGraphic().getWidth() / 2)/10)*10);
+    						_currentGraphic.getCoordinates().setY(Math.round((event.getY() - _currentGraphic.getGraphic().getHeight() / 2)/10)*10);
                     		_board.add(_currentGraphic);
-                    	} else if (_board.contains(_currentGraphic) && event.getY() < 50){
+                    	} else if (event.getY() <= 50){
                     		_toolbox.add(_currentGraphic);
-                    		_board.remove(_currentGraphic);
+                    		updateToolbox();
                     	}
                     	_currentGraphic = null;
                     }
@@ -81,18 +83,34 @@ public class PlayActivity extends Activity {
 				return true;
 			}
 		}
+		public void updateToolbox(){
+			int i = 0;
+			for (GraphicObject graphic : _toolbox){
+				graphic.getCoordinates().setX(10+40*i);
+				graphic.getCoordinates().setY(10);
+				i++;
+			}
+		}
 	
 		@Override
 		public void onDraw(Canvas canvas){
-			canvas.drawColor(Color.BLACK);
+			canvas.drawColor(Color.WHITE);
 			Bitmap bitmap;
 			GraphicObject.Coordinates coords;
-			drawToolbox(canvas);
-			for (GraphicObject graphic : _board) {
-                bitmap = graphic.getGraphic();
-                coords = graphic.getCoordinates();
-                canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
-            }
+			if (! _toolbox.isEmpty()){
+				for (GraphicObject graphic : _toolbox){
+					coords = graphic.getCoordinates();
+					bitmap = graphic.getGraphic();
+					canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
+				}
+			}
+			if (! _board.isEmpty()){
+				for (GraphicObject graphic : _board) {
+					bitmap = graphic.getGraphic();
+					coords = graphic.getCoordinates();
+					canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
+				}
+			}
             // draw current graphic at last...
             if (_currentGraphic != null) {
                 bitmap = _currentGraphic.getGraphic();
@@ -100,19 +118,6 @@ public class PlayActivity extends Activity {
                 canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
             }
         }
-		public void drawToolbox(Canvas canvas){
-			Bitmap bitmap;
-			GraphicObject graphic;
-			int x;
-			int y = 10;
-			for (int i = 0; i<_toolbox.size(); i++){
-				graphic = _toolbox.get(i);
-				x = 10+50*i;
-				canvas.drawBitmap(graphic.getGraphic(), 10+50*i, 10, null);
-				graphic.getCoordinates().setX(x);
-				graphic.getCoordinates().setY(y);
-			}
-		}
 		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             // TODO Auto-generated method stub
         }
@@ -177,6 +182,9 @@ public class PlayActivity extends Activity {
     }
     
     class GraphicObject {
+    	public boolean equals(GraphicObject g){
+    		return _coordinates.getX() == g.getCoordinates().getX()  && _coordinates.getY() == g.getCoordinates().getY();
+    	}
         public class Coordinates {
             private int _x = 100;
             private int _y = 0;
