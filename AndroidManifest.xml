@@ -22,7 +22,8 @@
         </activity>
         
 
-    </application>
+    <activity android:name=".OutlineActivity"></activity>
+</application>
     <uses-sdk android:minSdkVersion="4" />
 
 </manifest> 
