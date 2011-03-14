@@ -16,10 +16,9 @@ public class Bricktionary extends Activity {
         Button playButton = (Button) findViewById(R.id.Button01);
         playButton.setOnClickListener(new View.OnClickListener() {
             
-        	@Override
         	public void onClick(View v) {
                 // Perform action on click
-        		Intent i = new Intent().setClass(Bricktionary.this, PlayActivity.class);
+        		Intent i = new Intent().setClass(Bricktionary.this, OutlineActivity.class);
         		startActivity(i);
             }
         });
@@ -27,7 +26,6 @@ public class Bricktionary extends Activity {
         Button editButton = (Button) findViewById(R.id.Button02);
         editButton.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent().setClass(Bricktionary.this, SettingsActivity.class);
@@ -38,7 +36,6 @@ public class Bricktionary extends Activity {
         Button highScoreButton = (Button) findViewById(R.id.Button03);
         highScoreButton.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent i = new Intent().setClass(Bricktionary.this, HighScoreActivity.class);
