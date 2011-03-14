@@ -20,17 +20,27 @@ public class PlayActivity extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(new Panel(this));
+		
 	}
 
 	class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		private ActionThread _thread;
-		private ArrayList<GraphicObject> _graphics = new ArrayList<GraphicObject>();
+		private ArrayList<GraphicObject> _board = new ArrayList<GraphicObject>();
+		private ArrayList<GraphicObject> _toolbox = new ArrayList<GraphicObject>();
 		private GraphicObject _currentGraphic = null;
 		
 		public Panel(Context context) {
 			super(context);
 			getHolder().addCallback(this);
 			_thread = new ActionThread(getHolder(), this);
+			GraphicObject square = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.square));
+			GraphicObject triangle = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.triangle));
+			square.getCoordinates().setX(10);
+			square.getCoordinates().setY(10);
+			_toolbox.add(square);
+			triangle.getCoordinates().setX(50);
+			triangle.getCoordinates().setY(10);
+			_toolbox.add(triangle);
 			setFocusable(true);
 		}
 		
@@ -39,30 +49,34 @@ public class PlayActivity extends Activity {
 			synchronized (_thread.getSurfaceHolder()) {
 				GraphicObject graphic = null;
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
-					if (_graphics.isEmpty()){
-						graphic = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.square));
-						graphic.getCoordinates().setX(Math.round((event.getX() - graphic.getGraphic().getWidth() /2)/10)*10);
-						graphic.getCoordinates().setY(Math.round((event.getX() - graphic.getGraphic().getHeight() /2)/10)*10);
-						_currentGraphic = graphic;
-						_graphics.add(graphic);
-					} else{
-						float x = event.getX();
-						float y = event.getY();
-						for (GraphicObject g : _graphics){
-							if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
-								_currentGraphic = g;
-
-							}
+					float x = event.getX();
+					float y = event.getY();
+					for (GraphicObject g : _toolbox){
+						if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
+							_currentGraphic = g;
 						}
 					}
-					
+					for (GraphicObject g : _board){
+						if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
+							_currentGraphic = g;
+						}
+					}
 				} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 					if (_currentGraphic != null){
 						_currentGraphic.getCoordinates().setX(Math.round((event.getX() - _currentGraphic.getGraphic().getWidth() / 2)/10)*10);
 						_currentGraphic.getCoordinates().setY(Math.round((event.getY() - _currentGraphic.getGraphic().getHeight() / 2)/10)*10);
 					}
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    _currentGraphic = null;
+                    if (_currentGraphic != null){
+                    	if (_toolbox.contains(_currentGraphic) && event.getY() > 50){
+                    		_toolbox.remove(_currentGraphic);
+                    		_board.add(_currentGraphic);
+                    	} else if (_board.contains(_currentGraphic) && event.getY() < 50){
+                    		_toolbox.add(_currentGraphic);
+                    		_board.remove(_currentGraphic);
+                    	}
+                    	_currentGraphic = null;
+                    }
 				}
 				return true;
 			}
@@ -73,7 +87,8 @@ public class PlayActivity extends Activity {
 			canvas.drawColor(Color.BLACK);
 			Bitmap bitmap;
 			GraphicObject.Coordinates coords;
-			for (GraphicObject graphic : _graphics) {
+			drawToolbox(canvas);
+			for (GraphicObject graphic : _board) {
                 bitmap = graphic.getGraphic();
                 coords = graphic.getCoordinates();
                 canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
@@ -85,6 +100,19 @@ public class PlayActivity extends Activity {
                 canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
             }
         }
+		public void drawToolbox(Canvas canvas){
+			Bitmap bitmap;
+			GraphicObject graphic;
+			int x;
+			int y = 10;
+			for (int i = 0; i<_toolbox.size(); i++){
+				graphic = _toolbox.get(i);
+				x = 10+50*i;
+				canvas.drawBitmap(graphic.getGraphic(), 10+50*i, 10, null);
+				graphic.getCoordinates().setX(x);
+				graphic.getCoordinates().setY(y);
+			}
+		}
 		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             // TODO Auto-generated method stub
         }
@@ -149,110 +177,6 @@ public class PlayActivity extends Activity {
     }
     
     class GraphicObject {
-        public class Speed {
-            public static final int X_DIRECTION_RIGHT = 1;
-            public static final int X_DIRECTION_LEFT = -1;
-            public static final int Y_DIRECTION_DOWN = 1;
-            public static final int Y_DIRECTION_UP = -1;
-
-            private int _x = 1;
-            private int _y = 1;
-
-            private int _xDirection = X_DIRECTION_RIGHT;
-            private int _yDirection = Y_DIRECTION_DOWN;
-            
-            /**
-             * @return the _xDirection
-             */
-            public int getXDirection() {
-                return _xDirection;
-            }
-            
-            /**
-             * @param direction the _xDirection to set
-             */
-            public void setXDirection(int direction) {
-                _xDirection = direction;
-            }
-
-            public void toggleXDirection() {
-                if (_xDirection == X_DIRECTION_RIGHT) {
-                    _xDirection = X_DIRECTION_LEFT;
-                } else {
-                    _xDirection = X_DIRECTION_RIGHT;
-                }
-            }
-            
-            /**
-             * @return the _yDirection
-             */
-            public int getYDirection() {
-                return _yDirection;
-            }
-
-            /**
-             * @param direction the _yDirection to set
-             */
-            public void setYDirection(int direction) {
-                _yDirection = direction;
-            }
-
-            public void toggleYDirection() {
-                if (_yDirection == Y_DIRECTION_DOWN) {
-                    _yDirection = Y_DIRECTION_UP;
-                } else {
-                    _yDirection = Y_DIRECTION_DOWN;
-                }
-            }
-            
-            /**
-             * @return the _x
-             */
-            public int getX() {
-                return _x;
-            }
-
-            /**
-             * @param speed the _x to set
-             */
-            public void setX(int speed) {
-                _x = speed;
-            }
-
-            /**
-             * @return the _y
-             */
-            public int getY() {
-                return _y;
-            }
-
-            /**
-             * @param speed the _y to set
-             */
-            public void setY(int speed) {
-                _y = speed;
-            }
-            
-            public String toString() {
-                String xDirection;
-                String yDirection;
-                if (_xDirection == X_DIRECTION_RIGHT) {
-                    xDirection = "right";
-                } else {
-                    xDirection = "left";
-                }
-                if (_yDirection == Y_DIRECTION_UP) {
-                    yDirection = "up";
-                } else {
-                    yDirection = "down";
-                }
-                return "Speed: x: " + _x + " | y: " + _y + " | xDirection: " + xDirection + " | yDirection: " + yDirection;
-            }
-        }
-        
-        /**
-         * Contains the coordinates of the graphic.
-         */
         public class Coordinates {
             private int _x = 100;
             private int _y = 0;
@@ -280,21 +204,17 @@ public class PlayActivity extends Activity {
         
         private Bitmap _bitmap;
         private Coordinates _coordinates;
-        private Speed _speed;
     
         public GraphicObject(Bitmap bitmap) {
             _bitmap = bitmap;
             _coordinates = new Coordinates();
-            _speed = new Speed();
+
         }
     
         public Bitmap getGraphic() {
             return _bitmap;
         }
 
-        public Speed getSpeed() {
-            return _speed;
-        }
         
         public Coordinates getCoordinates() {
             return _coordinates;
