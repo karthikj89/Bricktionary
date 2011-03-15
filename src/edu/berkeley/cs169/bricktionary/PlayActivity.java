@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -55,6 +56,11 @@ public class PlayActivity extends Activity {
 						if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
 							_currentGraphic = g;
 							_toolbox.remove(g);
+							if (g.isActive()){
+								g.rotate();
+							} else {
+								setActive(g);
+							}
 							break;
 						}
 					}
@@ -62,6 +68,11 @@ public class PlayActivity extends Activity {
 						if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
 							_currentGraphic = g;
 							_board.remove(g);
+							if (g.isActive()){
+								g.rotate();
+							} else {
+								setActive(g);
+							}
 							break;
 						}
 					}
@@ -83,9 +94,21 @@ public class PlayActivity extends Activity {
                     	_currentGraphic = null;
                     }
 				}
+				
 				return true;
 			}
 		}
+		
+		public void setActive(GraphicObject g){
+			for (GraphicObject graphic : _toolbox){
+				g.setActive(false);
+			}
+			for (GraphicObject graphic : _board){
+				g.setActive(false);
+			}
+			g.setActive(true);
+		}
+		
 		public void updateToolbox(){
 			int i = 0;
 			for (GraphicObject graphic : _toolbox){
@@ -108,6 +131,10 @@ public class PlayActivity extends Activity {
 					coords = graphic.getCoordinates();
 					bitmap = graphic.getGraphic();
 					canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
+					if (graphic.isActive()){
+						paint.setColor(Color.CYAN);
+						canvas.drawRect(coords.getX()-25, coords.getY()-25, coords.getX()+25, coords.getY()+25, paint);
+					}
 				}
 			}
 			if (! _board.isEmpty()){
@@ -190,16 +217,27 @@ public class PlayActivity extends Activity {
     }
     
     class GraphicObject {
+    	private boolean _active;
     	public boolean equals(GraphicObject g){
     		return _coordinates.getX() == g.getCoordinates().getX()  && _coordinates.getY() == g.getCoordinates().getY();
     	}
+    	public boolean isActive(){
+        	return _active;
+        }
+        
+        public void setActive(boolean b){
+        	_active = b;
+        }
         public class Coordinates {
             private int _x = 100;
             private int _y = 0;
+            
     
             public int getX() {
                 return _x + _bitmap.getWidth() / 2;
             }
+            
+            
     
             public void setX(int value) {
                 _x = value - _bitmap.getWidth() / 2;
@@ -225,6 +263,12 @@ public class PlayActivity extends Activity {
             _bitmap = bitmap;
             _coordinates = new Coordinates();
 
+        }
+        
+        public void rotate(){
+        	Matrix matrix = new Matrix();
+        	matrix.postRotate(90);
+        	_bitmap = Bitmap.createBitmap(_bitmap,0,0,_bitmap.getWidth(), _bitmap.getHeight(), matrix, true);
         }
     
         public Bitmap getGraphic() {
