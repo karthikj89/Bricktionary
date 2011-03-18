@@ -1,0 +1,17 @@
+Welcome to the Bricktionary applicatoin
+
+What we have done so far:
+1) created a framework and links between all the pages
+2) made some basic settings on the settings pagee
+3) filled in mock data for the high scores page
+4) implemented the drag and drop features for pieces
+5) put basic shapes in the tool bar at the top
+6) made options for puzzles with outlines and no outlines
+
+
+Set up an Android emulator in eclipse. Minimum api level should be Level 4. 
+
+In order to run the application we need to open up the project in eclipse and 
+push the play button. This will run the application and open the android emulator.
+Once the application is opened you can navigate through the application by clicking 
+on whatever buttons that you want.  
