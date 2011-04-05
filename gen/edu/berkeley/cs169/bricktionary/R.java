@@ -19,13 +19,17 @@ public final class R {
         public static final int Button01=0x7f050002;
         public static final int Button02=0x7f050003;
         public static final int Button03=0x7f050004;
-        public static final int CheckBox01=0x7f050008;
-        public static final int CheckBox02=0x7f050009;
+        public static final int CheckBox01=0x7f05000c;
+        public static final int CheckBox02=0x7f05000d;
+        public static final int EditText01=0x7f050009;
+        public static final int EditText02=0x7f05000b;
         public static final int HighScore=0x7f050001;
         public static final int NoOutlineButton=0x7f050007;
         public static final int OutlineButton=0x7f050006;
-        public static final int SeekBar01=0x7f05000a;
+        public static final int SeekBar01=0x7f05000e;
         public static final int TextView01=0x7f050005;
+        public static final int TextView02=0x7f050008;
+        public static final int TextView03=0x7f05000a;
         public static final int TextViewHS=0x7f050000;
     }
     public static final class layout {
