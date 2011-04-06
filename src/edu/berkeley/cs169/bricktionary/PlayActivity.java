@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Button;
 
 public class PlayActivity extends Activity {
 	
@@ -21,8 +22,8 @@ public class PlayActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
-		setContentView(new Panel(this));
-		
+		Panel myPanel = new Panel(this);
+		setContentView(myPanel);
 	}
 
 	class Panel extends SurfaceView implements SurfaceHolder.Callback {
@@ -30,7 +31,7 @@ public class PlayActivity extends Activity {
 		private ArrayList<GraphicObject> _board = new ArrayList<GraphicObject>();
 		private ArrayList<GraphicObject> _toolbox = new ArrayList<GraphicObject>();
 		private GraphicObject _currentGraphic = null;
-		
+		private Button submitButton;
 		public Panel(Context context) {
 			super(context);
 			getHolder().addCallback(this);
@@ -42,7 +43,10 @@ public class PlayActivity extends Activity {
 			_toolbox.add(triangle);
 			_toolbox.add(triangle2);
 			updateToolbox();
-			setFocusable(true);
+
+			submitButton = new Button(context);
+			submitButton.setText("Submit!");
+			
 		}
 		
 		@Override
@@ -56,11 +60,6 @@ public class PlayActivity extends Activity {
 						if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
 							_currentGraphic = g;
 							_toolbox.remove(g);
-							if (g.isActive()){
-								g.rotate();
-							} else {
-								setActive(g);
-							}
 							break;
 						}
 					}
@@ -68,16 +67,11 @@ public class PlayActivity extends Activity {
 						if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
 							_currentGraphic = g;
 							_board.remove(g);
-							if (g.isActive()){
-								g.rotate();
-							} else {
-								setActive(g);
-							}
-							break;
 						}
 					}
 				} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 					if (_currentGraphic != null){
+						_currentGraphic.setActive(false);
 						_currentGraphic.getCoordinates().setX((int)event.getX() - _currentGraphic.getGraphic().getWidth() / 2);
 						_currentGraphic.getCoordinates().setY((int)event.getY() - _currentGraphic.getGraphic().getHeight() / 2);
 					}
@@ -87,24 +81,31 @@ public class PlayActivity extends Activity {
                     		_currentGraphic.getCoordinates().setX(Math.round((event.getX() - _currentGraphic.getGraphic().getWidth() / 2)/10)*10);
     						_currentGraphic.getCoordinates().setY(Math.round((event.getY() - _currentGraphic.getGraphic().getHeight() / 2)/10)*10);
                     		_board.add(_currentGraphic);
+
                     	} else if (event.getY() <= 50){
                     		_toolbox.add(_currentGraphic);
                     		updateToolbox();
                     	}
+                    	
+						if (_currentGraphic.isActive()){
+							_currentGraphic.rotate();
+						} else {
+							setActive(_currentGraphic);
+						}
+                		setActive(_currentGraphic);
                     	_currentGraphic = null;
                     }
 				}
-				
 				return true;
 			}
 		}
 		
 		public void setActive(GraphicObject g){
 			for (GraphicObject graphic : _toolbox){
-				g.setActive(false);
+				graphic.setActive(false);
 			}
 			for (GraphicObject graphic : _board){
-				g.setActive(false);
+				graphic.setActive(false);
 			}
 			g.setActive(true);
 		}
@@ -130,17 +131,21 @@ public class PlayActivity extends Activity {
 				for (GraphicObject graphic : _toolbox){ //Draw all objects in the toolbox
 					coords = graphic.getCoordinates();
 					bitmap = graphic.getGraphic();
-					canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
 					if (graphic.isActive()){
 						paint.setColor(Color.CYAN);
-						canvas.drawRect(coords.getX()-25, coords.getY()-25, coords.getX()+25, coords.getY()+25, paint);
+						canvas.drawRect(coords.getX(), coords.getY(), coords.getX()+50, coords.getY()+50, paint);
 					}
+					canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
 				}
 			}
 			if (! _board.isEmpty()){
 				for (GraphicObject graphic : _board) { //Draw all objects on the board
 					bitmap = graphic.getGraphic();
 					coords = graphic.getCoordinates();
+					if (graphic.isActive()){
+						paint.setColor(Color.CYAN);
+						canvas.drawRect(coords.getX(), coords.getY(), coords.getX()+50, coords.getY()+50, paint);
+					}
 					canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
 				}
 			}
@@ -150,7 +155,8 @@ public class PlayActivity extends Activity {
                 coords = _currentGraphic.getCoordinates();
                 canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
             }
-            
+			submitButton.draw(canvas);
+
             
         }
 		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {

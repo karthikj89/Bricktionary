@@ -7,5 +7,6 @@
     >
     
 <TextView android:text="This is the Play Page" android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+<Button android:text="@+id/Button01" android:id="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 </LinearLayout>
     
