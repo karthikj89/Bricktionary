@@ -8,9 +8,18 @@
     
 <TextView android:text="This is the Settings Page" android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 
+
+<TextView android:text="@+id/TextView02" android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+<EditText android:text="@+id/EditText01" android:id="@+id/EditText01" android:layout_width="wrap_content" android:layout_height="wrap_content"></EditText>
+<TextView android:text="@+id/TextView03" android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+<EditText android:text="@+id/EditText02" android:id="@+id/EditText02" android:layout_width="wrap_content" android:layout_height="wrap_content"></EditText>
 <CheckBox android:text="Setting1" android:id="@+id/CheckBox01" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
 <CheckBox android:text="Setting2" android:id="@+id/CheckBox02" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
 <SeekBar android:id="@+id/SeekBar01" android:layout_width="200px" android:layout_height="wrap_content"></SeekBar>
+
+
+
+
 
 </LinearLayout>
     
