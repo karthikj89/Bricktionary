@@ -13,8 +13,12 @@
         </activity>
         
         <activity android:name=".PlayActivity"></activity>
+        
+        <activity android:name=".PlayNoOutlineActivity"></activity>
 
 		<activity android:name=".SettingsActivity"></activity>
+		
+		<activity android:name=".ResetGameActivity"></activity>
         
         <activity android:name=".HighScoreActivity"></activity>
 
