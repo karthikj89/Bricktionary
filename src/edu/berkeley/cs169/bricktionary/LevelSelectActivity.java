@@ -13,6 +13,7 @@ public class LevelSelectActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.outline);
 		
+		/*
 		Button level1Button = (Button) findViewById(R.id.Level1Button);
         level1Button.setOnClickListener(new View.OnClickListener() {
             
@@ -112,6 +113,7 @@ public class LevelSelectActivity extends Activity {
         		startActivity(i);
             }
         });
+        */
 	}
 
 }

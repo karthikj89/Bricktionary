@@ -7,16 +7,16 @@ public class BoundingBox {
 	private Position max, min; // max (top right), min (bottom right)
 	private boolean valid;
 	
-	BoundingBox(){
+	public BoundingBox(){
 		valid = false;
 	}
 	
-	BoundingBox(ArrayList<Position> vertices){
+	public BoundingBox(ArrayList<Position> vertices){
 		this();
 		expand(vertices);
 	}
 	
-	BoundingBox(BoundingBox bb){
+	public BoundingBox(BoundingBox bb){
 		this();
 		max = new Position(bb.getMax());
 		min = new Position(bb.getMin());

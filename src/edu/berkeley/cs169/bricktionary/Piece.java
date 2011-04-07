@@ -11,7 +11,7 @@ public class Piece {
 	private BoundingBox bb, xbb;
 	boolean dirty; //dirty flag to show if xvertices/xbb (transformed vertices/bb) changed
 	
-	Piece (int type, Position pos, int orientation, ArrayList <Position> vertices) {
+	public Piece (int type, Position pos, int orientation, ArrayList <Position> vertices) {
 		this.type = type;
 		this.pos = new Position(pos);	
 		this.orientation = orientation;
@@ -19,7 +19,7 @@ public class Piece {
 		initialize();
 	}
 	
-	Piece (int type, Position pos) {
+	public Piece (int type, Position pos) {
 		this.type = type;
 		this.pos = new Position(pos);
 		

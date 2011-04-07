@@ -1,4 +1,4 @@
 bin/
 gen/
 .classpath
-default.properties
+.settings

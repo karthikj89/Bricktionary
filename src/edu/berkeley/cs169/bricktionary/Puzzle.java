@@ -10,7 +10,7 @@ public class Puzzle {
 	ArrayList<Position> solution;
 	ArrayList<Piece> pieces;
 	
-	Puzzle(int level, ArrayList<Position> solution, ArrayList<Piece> pieces){
+	public Puzzle(int level, ArrayList<Position> solution, ArrayList<Piece> pieces){
 		this.level = level;
 		//TODO: set startedTime and endedTime to currentTime
 		startedTime = System.nanoTime();
@@ -18,7 +18,7 @@ public class Puzzle {
 		this.pieces = pieces;
 	}
 	
-	Puzzle(int level){
+	public Puzzle(int level){
 		this(level,null,null);
 		//TODO: load solution and pieces from database according to level
 		//use a dummy triangle solution for now

@@ -72,20 +72,20 @@ public class PlayNoOutlineActivity extends Activity{
 			canvas.drawColor(Color.WHITE);
 		}
 
-		@Override
+		//@Override
 		public void surfaceChanged(SurfaceHolder holder, int format, int width,
 				int height) {
 			// TODO Auto-generated method stub
 
 		}
 
-		@Override
+		//@Override
 		public void surfaceCreated(SurfaceHolder holder) {
 			// TODO Auto-generated method stub
 
 		}
 
-		@Override
+		//@Override
 		public void surfaceDestroyed(SurfaceHolder holder) {
 			// TODO Auto-generated method stub
 
