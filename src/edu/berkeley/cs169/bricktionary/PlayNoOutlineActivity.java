@@ -1,13 +1,8 @@
 package edu.berkeley.cs169.bricktionary;
 
-import java.util.ArrayList;
-
-import edu.berkeley.cs169.bricktionary.PlayActivity.Panel;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PlayNoOutlineActivity extends Activity{
 	TextView timer; //textview to display the countdown
@@ -33,7 +27,7 @@ public class PlayNoOutlineActivity extends Activity{
 				LinearLayout.LayoutParams.WRAP_CONTENT, 
 				LinearLayout.LayoutParams.WRAP_CONTENT, 
 				0.0f);
-		layout.addView(timer, timerLP);
+		layout.addView(timer, timerLP); //add timer to layout
 
 		//20000 is the starting number (in milliseconds)
 		//1000 is the number to count down each time (in milliseconds)
@@ -46,7 +40,7 @@ public class PlayNoOutlineActivity extends Activity{
 				LinearLayout.LayoutParams.FILL_PARENT, 
 				1.0f));  
 
-		//Submit button
+		//Play Now button
 		Button playNowBtn = new Button(this); 
 		playNowBtn.setText("Play Now!"); 
         playNowBtn.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +56,7 @@ public class PlayNoOutlineActivity extends Activity{
 				LinearLayout.LayoutParams.WRAP_CONTENT, 
 				0.0f);
 		btnLP.leftMargin = 350; //set button position
-		layout.addView(playNowBtn, btnLP);
+		layout.addView(playNowBtn, btnLP); //add button to view
 		layout.setBackgroundColor(Color.WHITE);
 
 		setContentView(layout); 
@@ -106,7 +100,8 @@ public class PlayNoOutlineActivity extends Activity{
 		}
 		@Override
 		public void onFinish() {
-			timer.setText("done!");
+    		Intent i = new Intent().setClass(PlayNoOutlineActivity.this, PlayActivity.class);
+    		startActivity(i);
 		}
 		@Override
 		public void onTick(long millisUntilFinished) {
