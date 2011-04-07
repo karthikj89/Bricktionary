@@ -14,8 +14,8 @@
 
 <CheckBox android:text="Sounds" android:id="@+id/CheckBox01" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
 <CheckBox android:text="Music" android:id="@+id/CheckBox02" android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
-<Button android:text="Credits" android:id="@+id/creditsButton" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
-<Button android:text="Reset Game" android:id="@+id/resetButton" android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+<Button  android:id="@+id/creditsButton" android:background="@drawable/creditsbutton" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<Button android:id="@+id/resetButton" android:background="@drawable/resetgamebutton" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 
 </LinearLayout>
     </LinearLayout>

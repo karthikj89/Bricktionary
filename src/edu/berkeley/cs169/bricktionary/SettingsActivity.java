@@ -1,6 +1,8 @@
 package edu.berkeley.cs169.bricktionary;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +23,29 @@ public class SettingsActivity extends Activity {
         		Intent i = new Intent().setClass(SettingsActivity.this, CreditsActivity.class);
         		startActivity(i);
             }
-        });	
+        });
+        
+        Button resetgameButton = (Button) findViewById(R.id.resetButton);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        resetgameButton.setOnClickListener(new View.OnClickListener() {
+            
+        	public void onClick(View v) {
+                // Perform action on click
+        		builder.setMessage("Are you sure you want to reset the game?")
+        		       .setCancelable(false)
+        		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        		           public void onClick(DialogInterface dialog, int id) {
+//        		                MyActivity.this.finish();
+        		           }
+        		       })
+        		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        		           public void onClick(DialogInterface dialog, int id) {
+        		                dialog.cancel();
+        		           }
+        		       });
+        		AlertDialog alert = builder.create();
+        		alert.show();
+            }
+        });
 	}
 }
