@@ -28,7 +28,10 @@ public class PlayActivity extends Activity {
 		//		setContentView(myPanel);
 
 		LinearLayout layout = new LinearLayout(this); 
+		LinearLayout buttonsLayout = new LinearLayout(this);
+		
 		layout.setOrientation(LinearLayout.VERTICAL); 
+		buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
 		
 		layout.addView(myPanel, new LinearLayout.LayoutParams ( 
 				LinearLayout.LayoutParams.FILL_PARENT, 
@@ -52,17 +55,17 @@ public class PlayActivity extends Activity {
 		submitBtn.setText("Submit"); 
 		submitBtn.setClickable(true);
 
+		
 		LinearLayout.LayoutParams btnLP = new LinearLayout.LayoutParams ( 
 				LinearLayout.LayoutParams.WRAP_CONTENT, 
 				LinearLayout.LayoutParams.WRAP_CONTENT, 
 				0.0f);
 //		btnLP.leftMargin = 250; //set button position
 
-		layout.addView(recallBtn, btnLP); //add recall button to view
-		layout.addView(submitBtn, btnLP); //add submit button to view
-		
+		buttonsLayout.addView(recallBtn, btnLP); //add recall button to view
+		buttonsLayout.addView(submitBtn, btnLP); //add submit button to view
+		layout.addView(buttonsLayout);
 		layout.setBackgroundColor(Color.WHITE);
-		
 		setContentView(layout); 
 	}
 
