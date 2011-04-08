@@ -6,77 +6,32 @@ import java.util.Iterator;
 public class Piece {
 	private int type;
 	private int orientation;
-	private Position center;
+	private Position pos;
 	private ArrayList <Position> vertices, xvertices;
 	private BoundingBox bb, xbb;
-	private boolean _active;
 	boolean dirty; //dirty flag to show if xvertices/xbb (transformed vertices/bb) changed
 	
-	/**
-	 * 
-	 * @param type
-	 * @param pos
-	 * @param orientation
-	 * @param vertices
-	 */
 	public Piece (int type, Position pos, int orientation, ArrayList <Position> vertices) {
 		this.type = type;
-		this.center = new Position(pos);
+		this.pos = new Position(pos);	
 		this.orientation = orientation;
 		this.vertices = vertices;
 		initialize();
 	}
 	
-	/**
-	 * 
-	 * @param type
-	 * @param pos
-	 */
 	public Piece (int type, Position pos) {
 		this.type = type;
-		this.center = new Position(pos);
+		this.pos = new Position(pos);
 		
 		//TODO: get orientation and vertices from database according to type
 		//use a dummy 2x4 triangle defined with center at 0,0 for now
 		orientation = 0;
 		vertices = new ArrayList<Position>();
-		vertices.add(new Position(20,-40));
-		vertices.add(new Position(20,0));
-		vertices.add(new Position(-20,0));
+		vertices.add(new Position(-2,-1));
+		vertices.add(new Position(-2,1));
+		vertices.add(new Position(2,-1));
 		
 		initialize();
-	}
-	
-	public int getWidth(int type){
-		if(type==square){
-			return 40;
-		}else if(type==smallTriangle){
-			return 20;
-		}else if(type==mediumTriangle){
-			return 60;
-		}else if(type==largeTriangle){
-			return 80;
-		}else if(type==parallelogram){
-			return 80;
-		}
-		
-		return 0;
-	}
-	
-	public int getHeight(int type){
-		if(type==square){
-			return 40;
-		}else if(type==smallTriangle){
-			return 20;
-		}else if(type==mediumTriangle){
-			return 60;
-		}else if(type==largeTriangle){
-			return 80;
-		}else if(type==parallelogram){
-			return 80;
-		}
-		
-		return 0;
 	}
 	
 	private void initialize(){
@@ -87,34 +42,13 @@ public class Piece {
 		
 		bb = new BoundingBox(vertices); //create bounding box
 		xbb = new BoundingBox(bb); //create transformed bounding box
-		if(orientation!=0 || !(center.x==0 && center.y==0))
+		if(orientation!=0 || !(pos.x==0 && pos.y==0))
 			update();
 	}
 	
-	/**
-	 * 
-	 * @param newpos
-	 */
 	public void moveTo(Position newpos){
 		dirty = true;
-		center = newpos;
-	}
-	
-	public void moveTo(int x, int y){
-		dirty = true;
-		center.set(x,y);
-	}
-	
-	public void setVerticesOffset(Position newpos){
-		int offsetX;
-		int offsetY;
-		for (Position p : vertices){
-			offsetX = p.getX() - center.getX();
-			offsetY = p.getY() - center.getY();
-			p.set(newpos.getX() + offsetX, newpos.getY() + offsetY);
-		}
-		center = newpos;
-		dirty = true;
+		pos = newpos;
 	}
 	
 	public void rotate(){
@@ -125,12 +59,8 @@ public class Piece {
 			orientation = 0;
 	}
 	
-	/**new class
-	 * Checks if vertices inside the polygon described by vertices 
-	 * 
-	 * @param vertices2
-	 * @return
-	 */
+	//new class
+	/* Checks if vertices inside the polygon described by vertices */
 	public boolean inside(ArrayList<Position> vertices2){
 		Iterator<Position> xvitr = getXVertices().iterator();
 		while(xvitr.hasNext()){
@@ -140,8 +70,8 @@ public class Piece {
 		return true;
 	}
 	
-	/**new class
-	 * Checks for overlapping pieces
+	//new class
+	/* Checks for overlapping pieces
 	 * currently only checks if vertices are inside Piece p2 (not counting edges),
 	 * not a perfect check of overlap,
 	 * more useful if used while placing pieces
@@ -163,15 +93,13 @@ public class Piece {
 		return false;
 	}
 	
-	/**new class
-	 * returns 2 times the area of this piece 
-	 */
+	//new class
+	/* returns 2 times the area of this piece */
 	public int area2x(){
 		return Position.area2x(vertices);
 	}
 	
-	/**updates (transforms) xvertices to correct orientation and positions
-	 */
+	/*updates (transforms) xvertices to correct orientation and positions*/
 	public void update(){
 		if(dirty){
 			//update xvertices
@@ -179,17 +107,17 @@ public class Piece {
 				Position xVertex = xvertices.get(i);
 				xVertex.set(vertices.get(i));
 				xVertex.rotate(orientation);
-				xVertex.add(center);
+				xVertex.add(pos);
 			}
 			//update xbb
 			Position xbbMax = xbb.getMax();
 			xbbMax.set(bb.getMax());
 			xbbMax.rotate(orientation);
-			xbbMax.add(center);
+			xbbMax.add(pos);
 			Position xbbMin = xbb.getMin();
 			xbbMin.set(bb.getMin());
 			xbbMin.rotate(orientation);
-			xbbMin.add(center);
+			xbbMin.add(pos);
 			//update flag
 			dirty = false;
 		}
@@ -200,13 +128,10 @@ public class Piece {
 		return orientation;
 	}
 	public Position getPos(){
-		return center;
+		return pos;
 	}
 	public ArrayList<Position> getVertices(){
 		return vertices;
-	}
-	public void setVertices(ArrayList<Position> vert){
-		vertices = vert;
 	}
 	/*Returns updated transformed vertices for Piece (correct orientation and position)*/
 	public ArrayList<Position> getXVertices(){
@@ -216,24 +141,9 @@ public class Piece {
 	public BoundingBox getBB(){
 		return bb;
 	}
-	/**Returns updated transformed bb for Piece (correct orientation and position)*/
+	/*Returns updated transformed bb for Piece (correct orientation and position)*/
 	public BoundingBox getXBB(){
 		update();
 		return xbb;
 	}
-	
-	public boolean isActive(){
-		return _active;
-	}
-
-	public void setActive(boolean b){
-		_active = b;
-	}
-	
-	private static final int
-	square = 1,
-	smallTriangle = 2,
-	mediumTriangle = 3,
-	largeTriangle = 4,
-	parallelogram = 5;
 }

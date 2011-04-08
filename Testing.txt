@@ -38,5 +38,5 @@ call java %javaOpts% -Djava.ext.dirs=%frameworkdir% -jar %jarpath% %args%
 In a command window:
 cd into path of your Bricktionary project
 run android update project on both the project and test-project
-Start AVD running Android 2.1
+Start AVD running Android 2.1 (you can do so using eclipse too)
 run 'ant coverage'
