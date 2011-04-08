@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class Position {
 	int x, y;
-	Position(int x, int y){
+	public Position(int x, int y){
 		set(x,y);
 	}
 	
-	Position(Position pos){
+	public Position(Position pos){
 		set(pos);
 	}
 	

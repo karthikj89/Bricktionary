@@ -20,7 +20,7 @@ public class Piece {
 	 * @param orientation
 	 * @param vertices
 	 */
-	Piece (int type, Position pos, int orientation, ArrayList <Position> vertices) {
+	public Piece (int type, Position pos, int orientation, ArrayList <Position> vertices) {
 		this.type = type;
 		this.center = new Position(pos);	
 		this.orientation = orientation;
@@ -34,7 +34,7 @@ public class Piece {
 	 * @param type
 	 * @param pos
 	 */
-	Piece (int type, Position pos) {
+	public Piece (int type, Position pos) {
 		this.type = type;
 		this.center = new Position(pos);
 		

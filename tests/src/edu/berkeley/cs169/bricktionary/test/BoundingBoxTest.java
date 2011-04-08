@@ -66,10 +66,10 @@ public class BoundingBoxTest extends TestCase {
 		piece.rotate();
 		piece.rotate();
 		bb1.expand(piece);
-		assertEquals(3,bb1.getMax().x);
-		assertEquals(3,bb1.getMax().y);
-		assertEquals(1,bb1.getMin().x);
-		assertEquals(-1,bb1.getMin().y);
+		assertEquals(3,bb1.getMax().getX());
+		assertEquals(3,bb1.getMax().getY());
+		assertEquals(1,bb1.getMin().getX());
+		assertEquals(-1,bb1.getMin().getY());
 	}
 
 }
