@@ -121,4 +121,12 @@ public class Position {
 	    return !((t<0)||(u<0)||(t>1)||(u>1));
 	    //a*(1-t)+t*b intersection point
 	}
+	
+	//getters
+	public int getX(){
+		return x;
+	}
+	public int getY(){
+		return y;
+	}
 }

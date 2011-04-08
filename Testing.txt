@@ -35,14 +35,8 @@ To:
 set args=%args:""="%
 call java %javaOpts% -Djava.ext.dirs=%frameworkdir% -jar %jarpath% %args%
 
-In a command window (first time):
+In a command window:
 cd into path of your Bricktionary project
-android create project --target 3 --path ./ --activity Bricktionary --package edu.berkeley.cs169.bricktionary
-android create test-project -m ../ -n BricktionaryTest -p tests
-Start an AVD running Android 2.1 (API Level 7)
-run 'ant coverage'
-
---Run EMMA after first time--
 run android update project on both the project and test-project
 Start AVD running Android 2.1
 run 'ant coverage'
