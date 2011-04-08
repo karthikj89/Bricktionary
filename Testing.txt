@@ -1,5 +1,9 @@
 --JUnit Testing--
 http://developer.android.com/guide/developing/testing/testing_eclipse.html
+Make sure to set run configuration to run the entire package, rather than running every class separately.
+
+Activity testing described here:
+http://developer.android.com/resources/tutorials/testing/activity_test.html
 
 --EMMA code coverage--
 http://groups.google.com/group/android-developers/browse_thread/thread/43cf8a8ca5662f85/fc748e53f26ba3b0
@@ -13,6 +17,8 @@ launch an emulator for this AVD
 5. Run 'ant coverage' 
 
 --Detailed instructions to run EMMA--
+Make sure you have an up to date SDK. Older Android SDKs may not support the needed "ant coverage" command
+
 Make sure these are in your path variable already
 android-sdk-directory\tools
 android-sdk-directory\tools\ant
@@ -36,7 +42,7 @@ set args=%args:""="%
 call java %javaOpts% -Djava.ext.dirs=%frameworkdir% -jar %jarpath% %args%
 
 In a command window:
-cd into path of your Bricktionary project
-run android update project on both the project and test-project
-Start AVD running Android 2.1 (you can do so using eclipse too)
+(might have to run "android update project" on both first, but since I uploaded the build.xml files already to the repo, you likely don't).
+Start AVD running Android 2.1 (you can do so using the Android SDK and AVD Manager in eclipse)
+cd into your test-project directory (Bricktionary/tests)
 run 'ant coverage'
