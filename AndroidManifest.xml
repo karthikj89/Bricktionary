@@ -11,5 +11,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+        
+        <activity android:name=".PlayActivity"></activity>
+        
+        <activity android:name=".PlayNoOutlineActivity"></activity>
+        
+        <activity android:name=".SettingsActivity"></activity>
+        
+        <activity android:name=".ResetGameActivity"></activity>
+        
+        <activity android:name=".HighScoreActivity"></activity>
+        
+        <activity android:name=".CreditsActivity"></activity>
+        
+        <activity android:name=".OutlineActivity"></activity>
+        
+        </application>
+        
+        <uses-sdk android:minSdkVersion="4" />
+    
 </manifest> 

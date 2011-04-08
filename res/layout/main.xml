@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="Hello World, Bricktionary"
-    />
-</LinearLayout>
+    android:layout_width="fill_parent" android:padding="30dip"
+    android:orientation="horizontal"
+    android:background="@drawable/brick">
+    <LinearLayout android:orientation="vertical"
+        android:layout_height="wrap_content" android:layout_width="fill_parent"
+        android:layout_gravity="center">
+        <TextView android:text="Bricktionary" android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:layout_marginBottom="25dip"
+            android:textSize="34.5sp" android:textStyle="normal" android:textColorHighlight="#fff" android:textColor="#360505"></TextView>
 
+<Button android:id="@+id/Button01" android:background="@drawable/playbiggerbutton" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<Button android:background="@drawable/settingsbutton" android:id="@+id/Button02" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<Button android:background="@drawable/highscoresbutton" android:id="@+id/Button03" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+</LinearLayout>
+</LinearLayout>
