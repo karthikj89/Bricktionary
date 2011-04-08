@@ -3,13 +3,17 @@ package edu.berkeley.cs169.bricktionary;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -17,9 +21,14 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+
 
 public class PlayActivity extends Activity {
-
+	TextView tv;
+	static ArrayList<Piece> pieces;
+	static Puzzle puzzle;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -29,10 +38,10 @@ public class PlayActivity extends Activity {
 
 		LinearLayout layout = new LinearLayout(this); 
 		LinearLayout buttonsLayout = new LinearLayout(this);
-		
+
 		layout.setOrientation(LinearLayout.VERTICAL); 
 		buttonsLayout.setOrientation(LinearLayout.HORIZONTAL);
-		
+
 		layout.addView(myPanel, new LinearLayout.LayoutParams ( 
 				LinearLayout.LayoutParams.FILL_PARENT, 
 				LinearLayout.LayoutParams.FILL_PARENT, 
@@ -49,95 +58,176 @@ public class PlayActivity extends Activity {
 				myPanel.recall();
 			}
 		});
-		
+
 		//Submit button
 		Button submitBtn = new Button(this); 
 		submitBtn.setText("Submit"); 
 		submitBtn.setClickable(true);
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		submitBtn.setOnClickListener(new View.OnClickListener() {
 
-		
+			public void onClick(View v) {
+				// Perform action on click
+				int score = puzzle.calculateScore();
+				builder.setMessage("Your score is: "+score)
+				.setCancelable(false)
+				.setNegativeButton("Okay", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+		        		Intent i = new Intent().setClass(PlayActivity.this, OutlineActivity.class);
+		        		startActivity(i);
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+			}
+		});
+
 		LinearLayout.LayoutParams btnLP = new LinearLayout.LayoutParams ( 
 				LinearLayout.LayoutParams.WRAP_CONTENT, 
 				LinearLayout.LayoutParams.WRAP_CONTENT, 
 				0.0f);
-//		btnLP.leftMargin = 250; //set button position
+		//		btnLP.leftMargin = 250; //set button position
 
 		buttonsLayout.addView(recallBtn, btnLP); //add recall button to view
 		buttonsLayout.addView(submitBtn, btnLP); //add submit button to view
 		layout.addView(buttonsLayout);
+		tv = new TextView(this);
+		layout.addView(tv);
 		layout.setBackgroundColor(Color.WHITE);
+
 		setContentView(layout); 
 	}
 
 	class Panel extends SurfaceView implements SurfaceHolder.Callback {
 		private ActionThread _thread;
-		private ArrayList<GraphicObject> _board = new ArrayList<GraphicObject>();
-		private ArrayList<GraphicObject> _toolbox = new ArrayList<GraphicObject>();
-		private GraphicObject _currentGraphic = null;
+//		private ArrayList<Piece> _board = new ArrayList<Piece>();
+//		private ArrayList<Piece> _toolbox = new ArrayList<Piece>();
+		private Piece _currentGraphic = null;
+
 
 		public Panel(Context context) {
 			super(context);
 			getHolder().addCallback(this);
 			_thread = new ActionThread(getHolder(), this);
-			GraphicObject square = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.square));
-			GraphicObject triangle = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.triangle));
-			GraphicObject triangle2 = new GraphicObject(BitmapFactory.decodeResource(getResources(), R.drawable.triangle));
-			_toolbox.add(square);
-			_toolbox.add(triangle);
-			_toolbox.add(triangle2);
+
+			puzzle = new Puzzle(1); //Retrieve puzzle for Level 1
+			pieces = puzzle.pieces; //Retrieve the pieces for that puzzle
+
+			int i =0;
+			Piece p;
+			for(i = 0 ; i < pieces.size(); i++){
+				p = pieces.get(i);
+				if (p.getLocation() == 6){
+					p.moveTo(10+60*i,40); //set the right coordinates for each piece in toolbox
+					//_toolbox.add(p); //add each piece to the toolbox
+				}
+			}
+
+
 			updateToolbox();
-			
+
 		}
 
 		@Override
 		public boolean onTouchEvent(MotionEvent event) {
 			synchronized (_thread.getSurfaceHolder()) {
-				GraphicObject graphic = null;
+				Piece p = null;
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					float x = event.getX();
 					float y = event.getY();
-					for (GraphicObject g : _toolbox){
+					int i;
+					Piece piece;
+					//					if(!_toolbox.isEmpty())
+					//						_currentGraphic = _toolbox.get(0);
+					//					else if(!_board.isEmpty())
+					//						_currentGraphic = _board.get(0);
+					for (i = 0; i < pieces.size(); i ++ ){
+						if (pieces.get(i).getLocation() == 6){
+							piece = pieces.get(i);
+							if (Math.abs(x-25-piece.getPos().getX()) < 25 && Math.abs(y-25-piece.getPos().getY()) < 25){
+								_currentGraphic = piece;
+								pieces.get(i).setLocation(8);
+								//piece.moveTo(new Position((int)x,(int)y));
+								updateToolbox();
+								break;
+							}
+						}
+						else if (pieces.get(i).getLocation() == 7){
+							piece = pieces.get(i);
+							if (Math.abs(x-25-piece.getPos().getX()) < 25 && Math.abs(y-25-piece.getPos().getY()) < 25){
+								_currentGraphic = piece;
+								pieces.get(i).setLocation(8);
+								updateToolbox();
+								break;
+							}
+						}
+					}
+					/*
+					for (i=0;i<_toolbox.size();i++){
 						//outside of the toolbox
-						if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
-							_currentGraphic = g;
-							_toolbox.remove(g);
+						piece=_toolbox.get(i);
+						if (Math.abs(x-25-piece.getPos().getX()) < 25 && Math.abs(y-25-piece.getPos().getY()) < 25){
+							_currentGraphic = piece;
+							_toolbox.remove(piece);
+							//piece.moveTo(new Position((int)x,(int)y));
 							updateToolbox();
 							break;
 						}
 					}
-					for (GraphicObject g : _board){
-						if (Math.abs(x-25-g.getCoordinates().getX()) < 25 && Math.abs(y-25-g.getCoordinates().getY()) < 25){
-							_currentGraphic = g;
-							_board.remove(g);
+
+					for (i=0;i<_board.size();i++){
+						//inside the toolbox
+						piece=_board.get(i);
+						if (Math.abs(x-25-piece.getPos().getX()) < 25 && Math.abs(y-25-piece.getPos().getX()) < 25){
+							_currentGraphic = piece;
+							_board.remove(piece);
 							updateToolbox();
 							break;
 						}
 					}
+					 */
 				} else if (event.getAction() == MotionEvent.ACTION_MOVE) {
 					if (_currentGraphic != null){
 						_currentGraphic.setActive(false);
-						_currentGraphic.getCoordinates().setX((int)event.getX() - _currentGraphic.getGraphic().getWidth() / 2);
-						_currentGraphic.getCoordinates().setY((int)event.getY() - _currentGraphic.getGraphic().getHeight() / 2);
+						int posX = (int)event.getX() - _currentGraphic.getWidth(2) / 2;
+						int posY = (int)event.getY() - _currentGraphic.getHeight(2) / 2;
+						_currentGraphic.moveTo(posX,posY);
+						//_currentGraphic.(new Position(posX,posY));
+						//						_currentGraphic.getPos().set(posX, posY);
+						//_currentGraphic.setVertices(_currentGraphic.getXVertices());
+
+						tv.setText("posX: "+posX+" posY: "+posY+" eventX "+event.getX()+" eventY "+event.getY());
 					}
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					if (_currentGraphic != null){
-						if (event.getY() > 50){
-							_currentGraphic.getCoordinates().setX(Math.round((event.getX() - _currentGraphic.getGraphic().getWidth() / 2)/10)*10);
-							_currentGraphic.getCoordinates().setY(Math.round((event.getY() - _currentGraphic.getGraphic().getHeight() / 2)/10)*10);
-							_board.add(_currentGraphic);
-							_toolbox.remove(_currentGraphic);
+						if (event.getY() > 50){//within the board area and outside the toolbox
+							int posX = Math.round((event.getX() - _currentGraphic.getWidth(2) / 2)/10)*10;
+							int posY = Math.round((event.getY() - _currentGraphic.getHeight(2) / 2)/10)*10;
 
-						} else if (event.getY() <= 50){
-							_toolbox.add(_currentGraphic);
+							_currentGraphic.moveTo(posX,posY);
+							//_currentGraphic.(new Position(posX,posY));
+							//							_currentGraphic.getPos().set(posX, posY);
+							//	_currentGraphic.setVertices(_currentGraphic.getXVertices());
+							//							
+							//							_board.add(_currentGraphic);
+							//							_toolbox.remove(_currentGraphic);
+							_currentGraphic.setLocation(7);
+							tv.setText("UP posX: "+posX+" posY: "+posY+" eventX "+event.getX()+" eventY "+event.getY());
+
+						} else if (event.getY() <= 50){//within the toolbox area
+							//							_toolbox.add(_currentGraphic);
+							_currentGraphic.setLocation(6);
 							updateToolbox();
-							_board.remove(_currentGraphic);
+							//							_board.remove(_currentGraphic);
 						}
+
 						if (_currentGraphic.isActive()){
 							_currentGraphic.rotate();
 						} else {
 							setActive(_currentGraphic);
 						}
-						
+
 						setActive(_currentGraphic);
 						_currentGraphic = null;
 					}
@@ -146,14 +236,23 @@ public class PlayActivity extends Activity {
 			}
 		}
 
-		public void setActive(GraphicObject g){
-			for (GraphicObject graphic : _toolbox){
-				graphic.setActive(false);
+		/**
+		 * setActive sets all the pieces on the board and in the toolbox inactive except for the active piece
+		 * @param p
+		 */
+		public void setActive(Piece p){
+			//			for (Piece piece : _toolbox){
+			//				piece.setActive(false);
+			//			}
+			//			for (Piece piece : _board){
+			//				piece.setActive(false);
+			//			}
+			for (int i = 0; i < pieces.size(); i ++){
+				if (pieces.get(i).getLocation() != 8 ){
+					pieces.get(i).setActive(false);
+				}
 			}
-			for (GraphicObject graphic : _board){
-				graphic.setActive(false);
-			}
-			g.setActive(true);
+			p.setActive(true);
 		}
 
 		/**
@@ -161,73 +260,242 @@ public class PlayActivity extends Activity {
 		 */
 		public void updateToolbox(){
 			int i = 0;
-			for (GraphicObject graphic : _toolbox){
-				graphic.getCoordinates().setX(10+60*i);
-				graphic.getCoordinates().setY(10);
-				i++;
-			}
+			int posX = 0;
+			int posY = 0;
+			Piece p;
+			for (i = 0; i < pieces.size(); i ++){
+				if (pieces.get(i).getLocation() == 6){
+					p=pieces.get(i);
+					posX = 10+60*i;
+					posY = 10;
+					p.moveTo(posX, posY);
+				}
+
+			}/*
+			for (i=0;i<_toolbox.size();i++){
+				p=_toolbox.get(i);
+				posX = 10+60*i;
+				posY = 10;
+				p.moveTo(posX, posY);
+			}*/
 		}
-		
+
 		/**
 		 * Recall takes all of the pieces on the board and puts them back into the toolbox
 		 */
 		public void recall(){
 			int i = 0;
 			int lastPiecePosition = 0;
-			for (GraphicObject graphic : _board){
-				if(_board.isEmpty()){//don't do anything if the board is already empty
-					break;
+			int posX;
+			int posY;
+			Piece p;
+			for (i = 0; i < pieces.size(); i ++){
+				if (pieces.get(i).getLocation()!= 6){
+					pieces.get(i).setLocation(6);
+					posX = 10 + 60 * i;
+					posY = 10;
+					pieces.get(i).moveTo(posX,posY);
+
 				}
-				if(!(_toolbox.isEmpty())){ //if the toolbox is not empty, make sure that i is the index of the last piece 
-					lastPiecePosition = _toolbox.size();
-					i = lastPiecePosition;
-				} 
-
-				_toolbox.add(graphic);
-				graphic.getCoordinates().setX(10+60*i);
-				graphic.getCoordinates().setY(10);
-				i++;
+				pieces.get(i).setActive(false);
 			}
-			_board.clear();
-			
-			
-		}
+			//			for (i=0;i<_board.size();i++){
+			//				p = _board.get(i);
+			//				if(_board.isEmpty()){//don't do anything if the board is already empty
+			//					break;
+			//				}
+			//				if(!(_toolbox.isEmpty())){ //if the toolbox is not empty, make sure that i is the index of the last piece 
+			//					lastPiecePosition = _toolbox.size();
+			//					i = lastPiecePosition;
+			//				} 
+			//
+			//				_toolbox.add(p);
+			//				posX=10+60*i;
+			//				posY=10;
+			//				//p.setVerticesOffset(new Position(posX,posY));
+			//				p.moveTo(posX, posY);
+			//				
+			//				p.setActive(false);
+			//			}
+			//	_board.clear();
 
+
+		}
+		public boolean toolboxEmpty(){
+
+			for (int i =0; i < pieces.size(); i ++ ){
+				if (pieces.get(i).getLocation() == 6){
+					return false;
+				}
+
+			}
+			return true;
+		}
+		public boolean boardEmpty(){
+
+			for (int i =0; i < pieces.size(); i ++ ){
+				if (pieces.get(i).getLocation() == 7){
+					return false;
+				}
+
+			}
+			return true;
+		}
 		@Override
 		public void onDraw(Canvas canvas){
 			canvas.drawColor(Color.WHITE);
-			Bitmap bitmap;
-			GraphicObject.Coordinates coords;
 			Paint paint = new Paint();
 			paint.setColor(Color.BLACK); //Draw the line between the toolbox and play area
 			canvas.drawLine(0, 50, 600, 50, paint);
-			if (! _toolbox.isEmpty()){
-				for (GraphicObject graphic : _toolbox){ //Draw all objects in the toolbox
-					coords = graphic.getCoordinates();
-					bitmap = graphic.getGraphic();
-					if (graphic.isActive()){
-						paint.setColor(Color.CYAN);
-						canvas.drawRect(coords.getX(), coords.getY(), coords.getX()+50, coords.getY()+50, paint);
+
+
+			int i = 0; 
+			Path path;
+
+			//				Path puzzlePath = new Path();
+			//				puzzlePath.moveTo(puzzle.getSolution().get(0).getX(), puzzle.getSolution().get(0).getY());
+			//				puzzlePath.lineTo(puzzle.getSolution().get(1).getX(), puzzle.getSolution().get(1).getY());
+			//				puzzlePath.lineTo(puzzle.getSolution().get(2).getX(), puzzle.getSolution().get(2).getY());
+			//				puzzlePath.close();
+			//				canvas.drawPath(puzzlePath, null);
+			
+			//make puzzle outline as bg
+			path = new Path();
+			path.moveTo(puzzle.getSolution().get(0).getX(), puzzle.getSolution().get(0).getY());
+			path.lineTo(puzzle.getSolution().get(1).getX(), puzzle.getSolution().get(1).getY());
+			path.lineTo(puzzle.getSolution().get(2).getX(), puzzle.getSolution().get(2).getY());
+			path.close();
+			path.offset(200, 300);
+			Paint paint2 = new Paint();
+			paint2.setColor(Color.GREEN);
+			canvas.drawPath(path, paint2);
+			
+			for (int j = 0; j < pieces.size(); j++){ //Draw all objects in the toolbox
+				if (pieces.get(j).getLocation() == 6){
+					Piece p = pieces.get(j);
+					if(p.getType()==2 || p.getType()==3 || p.getType()==4){
+						
+					path = new Path();
+					path.moveTo(p.getVertices().get(0).getX(), p.getVertices().get(0).getY());
+					path.lineTo(p.getVertices().get(1).getX(), p.getVertices().get(1).getY());
+					path.lineTo(p.getVertices().get(2).getX(), p.getVertices().get(2).getY());
+					path.close();
+					path.offset(50*j, 40);
+					//					path.offset(p.getPos().getX(), p.getPos().getY());
+					canvas.drawPath(path, paint);
+					}else if(p.getType()==1){
+//						canvas.drawRect(p.getVertices().get(2).getX(), p.getVertices().get(0).getY(), p.getVertices().get(0).getX(), p.getVertices().get(1).getY(),paint);
+						path = new Path();
+						path.lineTo(p.getVertices().get(0).getX(), p.getVertices().get(0).getY());
+						path.lineTo(p.getVertices().get(1).getX(), p.getVertices().get(1).getY());
+						path.lineTo(p.getVertices().get(2).getX(), p.getVertices().get(2).getY());
+						path.lineTo(p.getVertices().get(3).getX(), p.getVertices().get(3).getY());
+						path.close();
+						path.offset(50*j, 40);
 					}
-					canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
+					i++;
+					if (p.isActive()){
+						paint.setColor(Color.CYAN);
+						canvas.drawRect(p.getPos().getX(), p.getPos().getY(), p.getPos().getX()+50, p.getPos().getY()+50, paint);
+					}
+				}
+				if (pieces.get(j).getLocation()==7){
+					Piece p = pieces.get(j);
+					if(p.getType()==2 || p.getType()==3 || p.getType()==4){
+						
+					path = new Path();
+					path.moveTo(p.getXVertices().get(0).getX(), p.getXVertices().get(0).getY());
+					path.lineTo(p.getXVertices().get(1).getX(), p.getXVertices().get(1).getY());
+					path.lineTo(p.getXVertices().get(2).getX(), p.getXVertices().get(2).getY());
+					path.close();
+					//					path.offset(50*i, 40);
+
+					//					path.offset(p.getPos().getX(), p.getPos().getY());
+
+					canvas.drawPath(path, paint);
+					canvas.drawPoint(p.getPos().getX(),p.getPos().getY(),paint);
+					}else if(p.getType()==1){
+//						canvas.drawRect(p.getVertices().get(2).getX(), p.getVertices().get(0).getY(), p.getVertices().get(0).getX(), p.getVertices().get(1).getY(),paint);
+						path = new Path();
+						path.lineTo(p.getVertices().get(0).getX(), p.getVertices().get(0).getY());
+						path.lineTo(p.getVertices().get(1).getX(), p.getVertices().get(1).getY());
+						path.lineTo(p.getVertices().get(2).getX(), p.getVertices().get(2).getY());
+						path.lineTo(p.getVertices().get(3).getX(), p.getVertices().get(3).getY());
+						path.close();
+						path.offset(50*j, 40);
+					}
+					i++;
+
+					if (p.isActive()){
+						paint.setColor(Color.CYAN);
+						canvas.drawRect(p.getPos().getX(), p.getPos().getY(), p.getPos().getX()+50, p.getPos().getY()+50, paint);
+					}
 				}
 			}
-			if (! _board.isEmpty()){
-				for (GraphicObject graphic : _board) { //Draw all objects on the board
-					bitmap = graphic.getGraphic();
-					coords = graphic.getCoordinates();
-					if (graphic.isActive()){
-						paint.setColor(Color.CYAN);
-						canvas.drawRect(coords.getX(), coords.getY(), coords.getX()+50, coords.getY()+50, paint);
-					}
-					canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
-				}
-			}
+
+			//				for (int j = 0; j < _toolbox.size(); j++){ //Draw all objects in the toolbox
+			//					Piece p = _toolbox.get(j);
+			//					path = new Path();
+			//					path.moveTo(p.getVertices().get(0).getX(), p.getVertices().get(0).getY());
+			//					path.lineTo(p.getVertices().get(1).getX(), p.getVertices().get(1).getY());
+			//					path.lineTo(p.getVertices().get(2).getX(), p.getVertices().get(2).getY());
+			//					path.close();
+			//					path.offset(50*i, 40);
+			//					//					path.offset(p.getPos().getX(), p.getPos().getY());
+			//					canvas.drawPath(path, paint);
+			//					i++;
+			//					if (p.isActive()){
+			//						paint.setColor(Color.CYAN);
+			//						canvas.drawRect(p.getPos().getX(), p.getPos().getY(), p.getPos().getX()+50, p.getPos().getY()+50, paint);
+			//					}
+			//				}
+			//			}
+			//			if (! boardEmpty()){
+			//				int i = 0;
+			//				Path path;
+			//				for (int j = 0; j < _board.size();j++) { //Draw all objects on the board
+			//					Piece p = _board.get(j);
+			//					path = new Path();
+			//					path.moveTo(p.getXVertices().get(0).getX(), p.getXVertices().get(0).getY());
+			//					path.lineTo(p.getXVertices().get(1).getX(), p.getXVertices().get(1).getY());
+			//					path.lineTo(p.getXVertices().get(2).getX(), p.getXVertices().get(2).getY());
+			//					path.close();
+			//					//					path.offset(50*i, 40);
+			//
+			//					//					path.offset(p.getPos().getX(), p.getPos().getY());
+			//
+			//					canvas.drawPath(path, paint);
+			//					canvas.drawPoint(p.getPos().getX(),p.getPos().getY(),paint);
+			//					i++;
+			//
+			//					if (p.isActive()){
+			//						paint.setColor(Color.CYAN);
+			//						canvas.drawRect(p.getPos().getX(), p.getPos().getY(), p.getPos().getX()+50, p.getPos().getY()+50, paint);
+			//					}
+			//				}
+			//			}
+
 			// Draw the object that is being dragged (if there is one)
 			if (_currentGraphic != null) {
-				bitmap = _currentGraphic.getGraphic();
-				coords = _currentGraphic.getCoordinates();
-				canvas.drawBitmap(bitmap, coords.getX(), coords.getY(), null);
+				if(_currentGraphic.getType()==2 || _currentGraphic.getType()==3 || _currentGraphic.getType()==4){
+				path = new Path();
+				path.moveTo(_currentGraphic.getXVertices().get(0).getX(), _currentGraphic.getXVertices().get(0).getY());
+				path.lineTo(_currentGraphic.getXVertices().get(1).getX(), _currentGraphic.getXVertices().get(1).getY());
+				path.lineTo(_currentGraphic.getXVertices().get(2).getX(), _currentGraphic.getXVertices().get(2).getY());
+				path.close();
+				
+				//path.offset(_currentGraphic.getPos().getX(), _currentGraphic.getPos().getY());
+				canvas.drawPath(path, paint);
+				}else if(_currentGraphic.getType()==1){
+//					canvas.drawRect(_currentGraphic.getVertices().get(2).getX(), _currentGraphic.getVertices().get(0).getY(), _currentGraphic.getVertices().get(0).getX(), _currentGraphic.getVertices().get(1).getY(),paint);
+					path = new Path();
+					path.lineTo(_currentGraphic.getVertices().get(0).getX(), _currentGraphic.getVertices().get(0).getY());
+					path.lineTo(_currentGraphic.getVertices().get(1).getX(), _currentGraphic.getVertices().get(1).getY());
+					path.lineTo(_currentGraphic.getVertices().get(2).getX(), _currentGraphic.getVertices().get(2).getY());
+					path.lineTo(_currentGraphic.getVertices().get(3).getX(), _currentGraphic.getVertices().get(3).getY());
+					path.close();
+					path.offset(50*i, 40);
+				}
 			}
 		}
 		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -290,71 +558,6 @@ public class PlayActivity extends Activity {
 					}
 				}
 			}
-		}
-	}
-
-	class GraphicObject {
-		private boolean _active;
-		public boolean equals(GraphicObject g){
-			return _coordinates.getX() == g.getCoordinates().getX()  && _coordinates.getY() == g.getCoordinates().getY();
-		}
-		public boolean isActive(){
-			return _active;
-		}
-
-		public void setActive(boolean b){
-			_active = b;
-		}
-		public class Coordinates {
-			private int _x = 100;
-			private int _y = 0;
-
-
-			public int getX() {
-				return _x + _bitmap.getWidth() / 2;
-			}
-
-
-
-			public void setX(int value) {
-				_x = value - _bitmap.getWidth() / 2;
-			}
-
-			public int getY() {
-				return _y + _bitmap.getHeight() / 2;
-			}
-
-			public void setY(int value) {
-				_y = value - _bitmap.getHeight() / 2;
-			}
-
-			public String toString() {
-				return "Coordinates: (" + _x + "/" + _y + ")";
-			}
-		}
-
-		private Bitmap _bitmap;
-		private Coordinates _coordinates;
-
-		public GraphicObject(Bitmap bitmap) {
-			_bitmap = bitmap;
-			_coordinates = new Coordinates();
-
-		}
-
-		public void rotate(){
-			Matrix matrix = new Matrix();
-			matrix.postRotate(90);
-			_bitmap = Bitmap.createBitmap(_bitmap,0,0,_bitmap.getWidth(), _bitmap.getHeight(), matrix, true);
-		}
-
-		public Bitmap getGraphic() {
-			return _bitmap;
-		}
-
-
-		public Coordinates getCoordinates() {
-			return _coordinates;
 		}
 	}
 }

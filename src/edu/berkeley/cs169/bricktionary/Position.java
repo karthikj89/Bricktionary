@@ -3,13 +3,12 @@ package edu.berkeley.cs169.bricktionary;
 import java.util.ArrayList;
 
 public class Position {
-	public int x;
-	public int y;
-	public Position(int x, int y){
+	int x, y;
+	Position(int x, int y){
 		set(x,y);
 	}
 	
-	public Position(Position pos){
+	Position(Position pos){
 		set(pos);
 	}
 	
@@ -41,7 +40,7 @@ public class Position {
 		return x==pos.x && y==pos.y;
 	}
 	
-	/* check if this position is inside the polygon described by given vertices
+	/** check if this position is inside the polygon described by given vertices
 	 * edgesInside specifies if edges/vertices count as inside
 	 * basically count times a ray to the right of position crosses a edge in the polygon
 	 * even means outside, odd means inside
@@ -90,9 +89,10 @@ public class Position {
 			return true;
 	}
 	
-	//2 times the area of any non-crossed polygon described by given vertices
-	//using 2 times to avoid floating point operation
-	//formula from: http://www.mathopenref.com/coordpolygonarea.html
+	/**2 times the area of any non-crossed polygon described by given vertices
+	 * using 2 times to avoid floating point operation
+	 * formula from: http://www.mathopenref.com/coordpolygonarea.html
+	*/
 	public static int area2x(ArrayList<Position> vertices){
 		int size = vertices.size();
 		if(size <= 2)
@@ -107,18 +107,40 @@ public class Position {
 		return sum;
 	}
 	
-	//static helper to figure determinant for edge intersections
+	/**static helper to figure determinant for edge intersections
+	 * 
+	 * @param vec1a
+	 * @param vec1b
+	 * @param vec2a
+	 * @param vec2b
+	 * @return
+	 */
 	public static double determinant(Position vec1a, Position vec1b, Position vec2a, Position vec2b){
 	    return (vec1a.x-vec1b.x)*(vec2a.y-vec2b.y)-(vec1a.y-vec1b.y)*(vec2a.x-vec2b.x);
 	}
 	
-	//static helper to figure if two edges intersect
-	//one edge is a-b, the other is c-d
+	/**static helper to figure if two edges intersect
+	 * one edge is a-b, the other is c-d
+	 * 
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @param d
+	 * @return
+	 */
 	public static boolean edgeIntersection(Position a, Position b, Position c, Position d){
 	    double det=determinant(b,a,c,d);
 	    double t=determinant(c,a,c,d)/det;
 	    double u=determinant(b,a,c,a)/det;
 	    return !((t<0)||(u<0)||(t>1)||(u>1));
 	    //a*(1-t)+t*b intersection point
+	}
+	
+	public int getX(){
+		return x;
+	}
+	
+	public int getY(){
+		return y;
 	}
 }

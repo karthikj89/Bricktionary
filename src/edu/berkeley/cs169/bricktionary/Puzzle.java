@@ -10,7 +10,13 @@ public class Puzzle {
 	ArrayList<Position> solution;
 	ArrayList<Piece> pieces;
 	
-	public Puzzle(int level, ArrayList<Position> solution, ArrayList<Piece> pieces){
+	/**
+	 * 
+	 * @param level
+	 * @param solution
+	 * @param pieces
+	 */
+	Puzzle(int level, ArrayList<Position> solution, ArrayList<Piece> pieces){
 		this.level = level;
 		//TODO: set startedTime and endedTime to currentTime
 		startedTime = System.nanoTime();
@@ -18,17 +24,28 @@ public class Puzzle {
 		this.pieces = pieces;
 	}
 	
-	public Puzzle(int level){
+	/**
+	 * 
+	 * @param level
+	 */
+	Puzzle(int level){
 		this(level,null,null);
 		//TODO: load solution and pieces from database according to level
 		//use a dummy triangle solution for now
 		solution = new ArrayList<Position>();
-		solution.add(new Position(0,0));
-		solution.add(new Position(0,2));
-		solution.add(new Position(4,0));
+		solution.add(new Position(40,-60));
+		solution.add(new Position(40,0));
+		solution.add(new Position(-40,0));
 		//use dummy piece for now
 		pieces = new ArrayList<Piece>();
-		pieces.add(new Piece(0, new Position(0,0)));
+		//pieces.add(new Piece(1, new Position(0,0)));
+		//pieces.add(new Piece(1, new Position(0,0)));
+		//pieces.add(new Piece(1, new Position(0,0)));
+		//pieces.add(new Piece(1, new Position(0,0)));
+		pieces.add(new Piece(4, new Position(0,0)));
+		//pieces.add(new Piece(2, new Position(0,0)));
+		
+
 	}
 	
 	private Piece addPiece(int type, Position pos){
