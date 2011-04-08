@@ -3,29 +3,13 @@
       package="edu.berkeley.cs169.bricktionary"
       android:versionCode="1"
       android:versionName="1.0">
-    <application android:name=".GlobalVariables" android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".Bricktionary"
+    <application android:label="@string/app_name" android:icon="@drawable/icon">
+        <activity android:name="Bricktionary"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <activity android:name=".PlayActivity"></activity>
-        
-        <activity android:name=".PlayNoOutlineActivity"></activity>
-
-		<activity android:name=".SettingsActivity"></activity>
-		
-		<activity android:name=".ResetGameActivity"></activity>
-        
-        <activity android:name=".HighScoreActivity"></activity>
-
-    	<activity android:name=".CreditsActivity"></activity>
-        
-    	<activity android:name=".OutlineActivity"></activity>
-	</application>
-    <uses-sdk android:minSdkVersion="4" />
-
+    </application>
 </manifest> 

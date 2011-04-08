@@ -1,7 +1,7 @@
-JUnit Testing
+--JUnit Testing--
 http://developer.android.com/guide/developing/testing/testing_eclipse.html
 
-EMMA code coverage
+--EMMA code coverage--
 http://groups.google.com/group/android-developers/browse_thread/thread/43cf8a8ca5662f85/fc748e53f26ba3b0
 1. If you already have an existing main project and test project; run
 'android update project' and on both your existing and test project
@@ -12,6 +12,37 @@ launch an emulator for this AVD
 4. cd to the <path of your test-project>
 5. Run 'ant coverage' 
 
-cd into path of your Brictionary project
-run:
-android create project --target 3 --path ./Bricktionary --activity Bricktionary --package edu.berkeley.cs169.bricktionary
+--Detailed instructions to run EMMA--
+Make sure these are in your path variable already
+android-sdk-directory\tools
+android-sdk-directory\tools\ant
+
+Setup ant:
+http://www.androidengineer.com/2010/06/using-ant-to-automate-building-android.html
+http://ant.apache.org/bindownload.cgi
+http://ant.apache.org/manual/install.html
+
+Patch up your android-sdk-directory/platform-tools/dx.bat to handle issue with spaces in directory names with ant:
+http://code.google.com/p/android/issues/detail?id=4567#c11
+Change line 50 from:
+set params=%*
+to:
+set params=%*
+set params=%params:"=""%
+Change ending line from:
+call java %javaOpts% -Djava.ext.dirs=%frameworkdir% -jar %jarpath% %args%
+To:
+set args=%args:""="%
+call java %javaOpts% -Djava.ext.dirs=%frameworkdir% -jar %jarpath% %args%
+
+In a command window (first time):
+cd into path of your Bricktionary project
+android create project --target 3 --path ./ --activity Bricktionary --package edu.berkeley.cs169.bricktionary
+android create test-project -m ../ -n BricktionaryTest -p tests
+Start an AVD running Android 2.1 (API Level 7)
+run 'ant coverage'
+
+--Run EMMA after first time--
+run android update project on both the project and test-project
+Start AVD running Android 2.1
+run 'ant coverage'
