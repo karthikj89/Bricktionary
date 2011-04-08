@@ -1,11 +1,14 @@
 --JUnit Testing--
-http://developer.android.com/guide/developing/testing/testing_eclipse.html
+You can just import the project in Bricktionary/tests/ into Eclipse to get started, since I already set it up.
 Make sure to set run configuration to run the entire package, rather than running every class separately.
 
+More information here:
+http://developer.android.com/guide/developing/testing/testing_eclipse.html
 Activity testing described here:
 http://developer.android.com/resources/tutorials/testing/activity_test.html
 
 --EMMA code coverage--
+Originally got instructions from here, see "Detailed Instructions to run EMMA" below instead, since I have it mostly set up already:
 http://groups.google.com/group/android-developers/browse_thread/thread/43cf8a8ca5662f85/fc748e53f26ba3b0
 1. If you already have an existing main project and test project; run
 'android update project' and on both your existing and test project
