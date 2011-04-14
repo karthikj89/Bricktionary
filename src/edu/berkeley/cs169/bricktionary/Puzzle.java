@@ -10,13 +10,16 @@ public class Puzzle {
 	ArrayList<Position> solution;
 	ArrayList<Piece> pieces;
 	
+
 	/**
 	 * 
 	 * @param level
 	 * @param solution
 	 * @param pieces
 	 */
+
 	public Puzzle(int level, ArrayList<Position> solution, ArrayList<Piece> pieces){
+
 		this.level = level;
 		//TODO: set startedTime and endedTime to currentTime
 		startedTime = System.nanoTime();
@@ -24,28 +27,56 @@ public class Puzzle {
 		this.pieces = pieces;
 	}
 	
+	private ArrayList<ArrayList<Position>> getsolutionList(){
+		ArrayList<ArrayList<Position>> solutionList = new ArrayList<ArrayList<Position>>();
+		
+		ArrayList<Position>solution1 = new ArrayList<Position>();
+		solution1.add(new Position(0,0));
+		solution1.add(new Position(50,-50));
+		solution1.add(new Position(100,0));
+		solution1.add(new Position(100,80));
+		solution1.add(new Position(0,80));
+		
+		ArrayList<Position>solution2 = new ArrayList<Position>();
+		solution2.add(new Position(0,0));
+		solution2.add(new Position(50,-50));
+		solution2.add(new Position(100,0));
+		solution2.add(new Position(100,80));
+		
+		ArrayList<Position>solution3 = new ArrayList<Position>();
+		solution3.add(new Position(0,0));
+		solution3.add(new Position(50,-50));
+		solution3.add(new Position(100,0));
+		
+		solutionList.add(solution1);
+		solutionList.add(solution2);
+		solutionList.add(solution3);
+		
+		return solutionList;
+	}
+	
+
 	/**
 	 * 
 	 * @param level
 	 */
+
 	public Puzzle(int level){
-		this(level,null,null);
+		this(level,null,null);		
 		//TODO: load solution and pieces from database according to level
 		//use a dummy triangle solution for now
-		solution = new ArrayList<Position>();
-		solution.add(new Position(40,-60));
-		solution.add(new Position(40,0));
-		solution.add(new Position(-40,0));
-		//use dummy piece for now
-		pieces = new ArrayList<Piece>();
-		//pieces.add(new Piece(1, new Position(0,0)));
-		//pieces.add(new Piece(1, new Position(0,0)));
-		//pieces.add(new Piece(1, new Position(0,0)));
-		//pieces.add(new Piece(1, new Position(0,0)));
-		pieces.add(new Piece(4, new Position(0,0)));
-		//pieces.add(new Piece(2, new Position(0,0)));
 		
-
+		int solutionIndex = level-1;
+		ArrayList<ArrayList<Position>> solutionList = getsolutionList();
+		solution = solutionList.get(solutionIndex);
+		
+		//pieces required for puzzle
+		pieces = new ArrayList<Piece>();
+		pieces.add(new Piece(1, new Position(0,0)));
+		pieces.add(new Piece(2, new Position(0,0)));
+		pieces.add(new Piece(3, new Position(0,0)));
+		pieces.add(new Piece(4, new Position(0,0)));
+		pieces.add(new Piece(5, new Position(0,0)));
 	}
 	
 	private Piece addPiece(int type, Position pos){

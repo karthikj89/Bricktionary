@@ -12,7 +12,8 @@ public class Piece {
 	private boolean _active;
 	private int location; // toolbox and board
 	boolean dirty; //dirty flag to show if xvertices/xbb (transformed vertices/bb) changed
-	
+
+
 	/**
 	 * 
 	 * @param type
@@ -28,95 +29,95 @@ public class Piece {
 		this.location = toolbox;
 		initialize();
 	}
-	
 	/**
 	 * 
 	 * @param type
 	 * @param pos
 	 */
 	public Piece (int type, Position pos) {
+
 		this.type = type;
 		this.center = new Position(pos);
-		
+
 		//TODO: get orientation and vertices from database according to type
 		//use a dummy 2x4 triangle defined with center at 0,0 for now
 		orientation = 0;
-		if(type==smallTriangle){
-		vertices = new ArrayList<Position>();
-		vertices.add(new Position(20,-40));
-		vertices.add(new Position(20,0));
-		vertices.add(new Position(-20,0));
+		if(type==square){
+			vertices = new ArrayList<Position>();
+			vertices.add(new Position(0,0));
+			vertices.add(new Position(0,40));
+			vertices.add(new Position(40,40));
+			vertices.add(new Position(40,0));
+		}else if(type==smallTriangle){
+			vertices = new ArrayList<Position>();
+			vertices.add(new Position(0,0));
+			vertices.add(new Position(40,0));
+			vertices.add(new Position(40,-40));
 		}else if(type==mediumTriangle){
 			vertices = new ArrayList<Position>();
-			vertices.add(new Position(30,-50));
-			vertices.add(new Position(30,0));
-			vertices.add(new Position(-30,0));			
+			vertices.add(new Position(0,0));
+			vertices.add(new Position(50,0));
+			vertices.add(new Position(50,-50));			
 		}else if(type==largeTriangle){
 			vertices = new ArrayList<Position>();
-			vertices.add(new Position(40,-60));
-			vertices.add(new Position(40,0));
-			vertices.add(new Position(-40,0));			
-		}else if(type==square){
-			vertices = new ArrayList<Position>();
-			vertices.add(new Position(10,-10));
-			vertices.add(new Position(10,10));
-			vertices.add(new Position(-10,10));
-			vertices.add(new Position(-10,-10));
+			vertices.add(new Position(0,0));
+			vertices.add(new Position(60,0));
+			vertices.add(new Position(60,-60));			
 		}else if(type==parallelogram){
 			vertices = new ArrayList<Position>();
-			vertices.add(new Position(10,-10));
-			vertices.add(new Position(10,0));
-			vertices.add(new Position(-10,0));
-			vertices.add(new Position(-10,-10));
+			vertices.add(new Position(0,0));
+			vertices.add(new Position(70,0));
+			vertices.add(new Position(80,-40));
+			vertices.add(new Position(10,-40));
 		}
 		this.location = toolbox;
 		initialize();
 	}
-	
+
 	public int getWidth(int type){
 		if(type==square){
-			return 20;
-		}else if(type==smallTriangle){
-			return 20;
-		}else if(type==mediumTriangle){
-			return 30;
-		}else if(type==largeTriangle){
 			return 40;
+		}else if(type==smallTriangle){
+			return 40;
+		}else if(type==mediumTriangle){
+			return 50;
+		}else if(type==largeTriangle){
+			return 60;
 		}else if(type==parallelogram){
 			return 80;
 		}
-		
+
 		return 0;
 	}
-	
+
 	public int getHeight(int type){
 		if(type==square){
-			return 20;
+			return 40;
 		}else if(type==smallTriangle){
-			return 20;
+			return 40;
 		}else if(type==mediumTriangle){
-			return 60;
+			return 50;
 		}else if(type==largeTriangle){
-			return 80;
+			return 60;
 		}else if(type==parallelogram){
 			return 80;
 		}
-		
+
 		return 0;
 	}
-	
+
 	private void initialize(){
 		xvertices = new ArrayList<Position>();
 		//copy vertices to xvertices
 		for(int i = 0; i < vertices.size(); i++)
 			xvertices.add(new Position(vertices.get(i)));
-		
+
 		bb = new BoundingBox(vertices); //create bounding box
 		xbb = new BoundingBox(bb); //create transformed bounding box
 		if(orientation!=0 || !(center.x==0 && center.y==0))
 			update();
 	}
-	
+
 	/**
 	 * 
 	 * @param newpos
@@ -125,13 +126,13 @@ public class Piece {
 		dirty = true;
 		center = newpos;	
 	}
-	
+
 	public void moveTo(int x, int y){
 		dirty = true;
 		Position newPos = new Position(x,y);
 		center = newPos;	
 	}
-	
+
 	public void setVerticesOffset(Position newpos){
 		int offsetX;
 		int offsetY;
@@ -143,7 +144,7 @@ public class Piece {
 		center = newpos;
 		dirty = true;
 	}
-	
+
 	public void rotate(){
 		dirty = true;
 		if(orientation < 3)
@@ -151,7 +152,7 @@ public class Piece {
 		else
 			orientation = 0;
 	}
-	
+
 	/**new class
 	 * Checks if vertices inside the polygon described by vertices 
 	 * 
@@ -166,7 +167,7 @@ public class Piece {
 		}
 		return true;
 	}
-	
+
 	/**new class
 	 * Checks for overlapping pieces
 	 * currently only checks if vertices are inside Piece p2 (not counting edges),
@@ -179,7 +180,7 @@ public class Piece {
 		BoundingBox xbb = getXBB();
 		BoundingBox xbb2 = p2.getXBB();
 		xbb.overlap(xbb2);
-		
+
 		//check if xvertices inside Piece p2 (not counting edges)
 		ArrayList<Position> vertices2 = p2.getXVertices();
 		Iterator<Position> xvitr = getXVertices().iterator();
@@ -189,14 +190,14 @@ public class Piece {
 		}
 		return false;
 	}
-	
+
 	/**new class
 	 * returns 2 times the area of this piece 
 	 */
 	public int area2x(){
 		return Position.area2x(vertices);
 	}
-	
+
 	/**updates (transforms) xvertices to correct orientation and positions
 	 */
 	public void update(){
@@ -221,11 +222,11 @@ public class Piece {
 			dirty = false;
 		}
 	}
-	
+
 	//new classes: getters and setters
 	public int getLocation(){
 		return location;
-		
+
 	}
 	public void setLocation(int Location){
 		this.location = Location;
@@ -255,7 +256,7 @@ public class Piece {
 		update();
 		return xbb;
 	}
-	
+
 	public boolean isActive(){
 		return _active;
 	}
@@ -263,13 +264,13 @@ public class Piece {
 	public void setActive(boolean b){
 		_active = b;
 	}
-	
+
 	public int getType(){
 		return type;
 	}
 
-	
-	private static final int
+
+	public static final int
 	square = 1,
 	smallTriangle = 2,
 	mediumTriangle = 3,

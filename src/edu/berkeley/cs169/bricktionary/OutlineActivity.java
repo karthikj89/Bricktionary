@@ -37,6 +37,7 @@ public class OutlineActivity extends Activity {
 				.setNegativeButton("Okay", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
+						GlobalVariables.setOutlineStatus(false);
 		        		Intent i = new Intent().setClass(OutlineActivity.this, PlayNoOutlineActivity.class);
 		        		startActivity(i);
 					}
