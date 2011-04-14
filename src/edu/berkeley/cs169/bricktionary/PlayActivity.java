@@ -143,6 +143,7 @@ public class PlayActivity extends Activity {
 							&& Math.abs(y - 25 - piece.getPos().getY()) < 25) {
 						_currentGraphic = piece;
 						_toolbox.remove(piece);
+						setActive(piece);
 						updateToolbox();
 						break;
 					}
@@ -153,6 +154,7 @@ public class PlayActivity extends Activity {
 							&& Math.abs(y - 25 - piece.getPos().getY()) < 25) {
 						_currentGraphic = piece;
 						_board.remove(piece);
+						setActive(piece);
 						updateToolbox();
 						break;
 					}
