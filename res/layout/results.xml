@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent" android:padding="30dip"
+    android:orientation="horizontal"
+    android:background="@drawable/brick">
+    <LinearLayout android:orientation="vertical"
+    android:id="@+id/RBResults"
+        android:layout_height="wrap_content" android:layout_width="fill_parent"
+        android:layout_gravity="center">
+        <Button android:background="@drawable/nextlevelbutton" android:id="@+id/nextlevelButton" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+        <Button android:background="@drawable/replaybutton" android:id="@+id/replayButton" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+        </LinearLayout>
+        </LinearLayout>

@@ -3,7 +3,8 @@ package edu.berkeley.cs169.bricktionary;
 import java.util.ArrayList;
 
 public class Position {
-	int x, y;
+	public int x;
+	public int y;
 	public Position(int x, int y){
 		set(x,y);
 	}
