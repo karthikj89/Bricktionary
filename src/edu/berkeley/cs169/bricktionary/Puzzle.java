@@ -9,7 +9,6 @@ public class Puzzle {
 	long endedTime; //changed to a long
 	ArrayList<Position> solution;
 	ArrayList<Piece> pieces;
-	boolean outline;
 	
 
 	/**
@@ -26,7 +25,6 @@ public class Puzzle {
 		startedTime = System.nanoTime();
 		this.solution = solution;
 		this.pieces = pieces;
-		this.outline = true;
 	}
 	
 	private ArrayList<ArrayList<Position>> getsolutionList(){
@@ -134,7 +132,7 @@ public class Puzzle {
 			return 1;
 		
 		//if no outline, move solution vertices according to alignment
-		if(!outline) {
+		if(!GlobalVariables.outlineOn) {
 			Iterator<Position> slnItr = solution.iterator();
 			while(slnItr.hasNext()){
 				slnItr.next().add(displaceSBB);
@@ -190,10 +188,6 @@ public class Puzzle {
 	}
 	public ArrayList<Piece> getPieces(){
 		return pieces;
-	}
-	//set if puzzle shows outline or not
-	public void setOutline(boolean outline){
-		this.outline = outline;
 	}
 	//get time elapsed in seconds since Puzzle created
 	public double getElapsedTime(){
