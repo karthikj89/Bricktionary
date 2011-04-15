@@ -17,8 +17,6 @@
         
         <activity android:name=".SettingsActivity"></activity>
         
-        <activity android:name=".ResetGameActivity"></activity>
-        
         <activity android:name=".HighScoreActivity"></activity>
         
         <activity android:name=".CreditsActivity"></activity>

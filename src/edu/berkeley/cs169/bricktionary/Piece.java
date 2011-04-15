@@ -74,36 +74,12 @@ public class Piece {
 		initialize();
 	}
 
-	public int getWidth(int type){
-		if(type==square){
-			return 40;
-		}else if(type==smallTriangle){
-			return 40;
-		}else if(type==mediumTriangle){
-			return 50;
-		}else if(type==largeTriangle){
-			return 60;
-		}else if(type==parallelogram){
-			return 80;
-		}
-
-		return 0;
+	public int getWidth(){
+		return bb.getMax().getX()-bb.getMin().getX();
 	}
 
-	public int getHeight(int type){
-		if(type==square){
-			return 40;
-		}else if(type==smallTriangle){
-			return 40;
-		}else if(type==mediumTriangle){
-			return 50;
-		}else if(type==largeTriangle){
-			return 60;
-		}else if(type==parallelogram){
-			return 80;
-		}
-
-		return 0;
+	public int getHeight(){
+		return bb.getMax().getY()-bb.getMin().getY();
 	}
 
 	private void initialize(){

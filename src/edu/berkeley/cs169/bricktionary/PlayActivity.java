@@ -164,11 +164,9 @@ public class PlayActivity extends Activity {
 				if (_currentGraphic != null) {
 					_currentGraphic.setActive(false);
 					int posX = (int) event.getX()
-					- _currentGraphic.getWidth(_currentGraphic
-							.getType()) / 2;
+					- _currentGraphic.getWidth() / 2;
 					int posY = (int) event.getY()
-					- _currentGraphic.getHeight(_currentGraphic
-							.getType()) / 2;
+					- _currentGraphic.getHeight() / 2;
 					_currentGraphic.moveTo(posX, posY);
 				}
 			} else if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -176,10 +174,10 @@ public class PlayActivity extends Activity {
 					if (event.getY() > 80) {// within the board area and outside
 						// the toolbox
 						int posX = Math.round((event.getX() - _currentGraphic
-								.getWidth(_currentGraphic.getType()) / 2) / 10) * 10;
+								.getWidth() / 2) / 10) * 10;
 						int posY = Math
 						.round((event.getY() - _currentGraphic
-								.getHeight(_currentGraphic.getType()) / 2) / 10) * 10;
+								.getHeight() / 2) / 10) * 10;
 
 						// //Deals with overlap
 						// for(int i = 0; i<_board.size();i++){
