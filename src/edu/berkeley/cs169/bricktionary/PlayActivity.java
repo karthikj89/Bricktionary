@@ -150,8 +150,8 @@ public class PlayActivity extends Activity {
 				}
 
 				for (Piece piece : _board) {
-					if (Math.abs(x - 25 - piece.getPos().getX()) < 25
-							&& Math.abs(y - 25 - piece.getPos().getY()) < 25) {
+					if (Math.abs(x - piece.getPos().getX()) < 25
+							&& Math.abs(y - piece.getPos().getY()) < 25) {
 						_currentGraphic = piece;
 						_board.remove(piece);
 						setActive(piece);
