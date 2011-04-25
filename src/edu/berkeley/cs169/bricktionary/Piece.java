@@ -74,36 +74,12 @@ public class Piece {
 		initialize();
 	}
 
-	public int getWidth(int type){
-		if(type==square){
-			return 40;
-		}else if(type==smallTriangle){
-			return 40;
-		}else if(type==mediumTriangle){
-			return 50;
-		}else if(type==largeTriangle){
-			return 60;
-		}else if(type==parallelogram){
-			return 80;
-		}
-
-		return 0;
+	public int getWidth(){
+		return bb.getMax().getX()-bb.getMin().getX();
 	}
 
-	public int getHeight(int type){
-		if(type==square){
-			return 40;
-		}else if(type==smallTriangle){
-			return 40;
-		}else if(type==mediumTriangle){
-			return 50;
-		}else if(type==largeTriangle){
-			return 60;
-		}else if(type==parallelogram){
-			return 80;
-		}
-
-		return 0;
+	public int getHeight(){
+		return bb.getMax().getY()-bb.getMin().getY();
 	}
 
 	private void initialize(){
@@ -170,18 +146,20 @@ public class Piece {
 
 	/**new class
 	 * Checks for overlapping pieces
-	 * currently only checks if vertices are inside Piece p2 (not counting edges),
-	 * not a perfect check of overlap,
+	 * currently only checks if vertices are inside Piece p2 ,
+	 * not a perfect check of overlap (perfect check would check edges),
 	 * more useful if used while placing pieces
 	 * idea from here: http://gpwiki.org/index.php/Polygon_Collision
 	 */
 	public boolean overlap(Piece p2){
 		//first check if BoundingBox overlaps
+		//if not, return false
 		BoundingBox xbb = getXBB();
 		BoundingBox xbb2 = p2.getXBB();
-		xbb.overlap(xbb2);
+		if(!xbb.overlap(xbb2))
+			return false;
 
-		//check if xvertices inside Piece p2 (not counting edges)
+		//check if xvertices inside Piece p2 (not checking by edge intersections)
 		ArrayList<Position> vertices2 = p2.getXVertices();
 		Iterator<Position> xvitr = getXVertices().iterator();
 		while(xvitr.hasNext()){

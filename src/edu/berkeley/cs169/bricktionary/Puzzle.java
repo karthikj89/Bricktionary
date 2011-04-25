@@ -92,10 +92,26 @@ public class Puzzle {
 	}
 	
 	public int calculateScore(){
-		int score = 0;
+		endedTime = System.nanoTime();
+		Iterator <Piece> pitr = pieces.iterator();
+		
+		//calculate if pieces and solution same area
+		int slnArea = Position.area2x(solution);
+		int piecesArea = 0;
+		pitr = pieces.iterator();
+		while(pitr.hasNext()){
+			piecesArea += pitr.next().area2x();
+		}
+		boolean sameArea = false;
+		if(slnArea == piecesArea)
+			sameArea = true;
+		
+		//** return score=0 if pieces not the same area as solution
+		if(!sameArea)
+			return 0;
+		
 		BoundingBox sbb = new BoundingBox(solution); //bounding box of solution
 		BoundingBox pbb = new BoundingBox(); //bounding box of pieces
-		Iterator <Piece> pitr = pieces.iterator();
 		while(pitr.hasNext()){
 			Piece piece = pitr.next();
 			pbb.expand(piece);
@@ -107,38 +123,40 @@ public class Puzzle {
 				sbb.getMax().y+displaceSBB.y);
 		
 		//check if bounding boxes match
+		boolean bbsMatch = false;
 		if(pbb.getMax().equals(alignedSBBMax))
-			score+= 1;
+			bbsMatch = true;
 		
-		//move solution vertices according to alignment
-		Iterator<Position> slnItr = solution.iterator();
-		while(slnItr.hasNext()){
-			slnItr.next().add(displaceSBB);
-		}
+		//** return score=1 if at least area is the same, but bounding box doesn't match
+		if(!bbsMatch)
+			return 1;
 		
-		//calculate if pieces and solution same area (eliminate possibility of holes)
-		int slnArea = Position.area2x(solution);
-		int piecesArea = 0;
-		pitr = pieces.iterator();
-		while(pitr.hasNext()){
-			piecesArea += pitr.next().area2x();
+		//if no outline, move solution vertices according to alignment
+		if(!GlobalVariables.outlineOn) {
+			Iterator<Position> slnItr = solution.iterator();
+			while(slnItr.hasNext()){
+				slnItr.next().add(displaceSBB);
+			}
 		}
-		if(slnArea == piecesArea)
-			score+=10;
 		
 		//calculate if pieces inside solution
 		boolean inside = true;
+		int numPiecesInside = 0;
 		pitr = pieces.iterator();
 		while(pitr.hasNext()){
-			if(!pitr.next().inside(solution)){
+			if(pitr.next().inside(solution)){
+				numPiecesInside++;
+			} else {
 				inside = false;
-				break;
 			}
 		}
-		if(inside)
-			score+=100;
 		
-		//TODO: calculate if pieces overlap
+		//** return score=2 to 8 depending on percentage of pieces inside solution
+		if(!inside)
+			return 1 + 7*(numPiecesInside/pieces.size());
+		
+		//calculate if pieces overlap
+		//not needed here if done on the fly when placing pieces
 		boolean overlap = false;
 		pitr = pieces.iterator();
 		while(pitr.hasNext()){
@@ -150,10 +168,13 @@ public class Puzzle {
 				}
 			}
 		}
-		if(!overlap)
-			score+=1000;
 		
-		return score;
+		//** return score=10 if satisfies all criterion
+		//else return score=9 if overlap detected
+		if(!overlap)
+			return 10;
+		else
+			return 9;
 	}
 	
 	public void reset(){
@@ -167,5 +188,9 @@ public class Puzzle {
 	}
 	public ArrayList<Piece> getPieces(){
 		return pieces;
+	}
+	//get time elapsed in seconds since Puzzle created
+	public double getElapsedTime(){
+		return (double)(System.nanoTime()-startedTime)/1000000000.0;
 	}
 }
