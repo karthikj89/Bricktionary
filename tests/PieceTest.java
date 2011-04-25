@@ -20,9 +20,9 @@ public class PieceTest extends TestCase {
 		super.setUp();
 		type = 0;
 		orientation = 0;
-		center = newPos(0,0);
-		vertices = new ArrayList<Position>;
-		p = new Piece(type,orientation,center,vertices);
+		center = new Position(0,0);
+		vertices = new ArrayList<Position>();
+		p = new Piece(type,center,orientation,vertices);
 	}
 
 	protected void tearDown() throws Exception {

@@ -17,7 +17,7 @@ public class GlobalVariablesTest extends TestCase {
 	}
 	
 	public void testInit() {
-		assertEquals(0,gv.getCurrentLevel());
+		assertEquals(1,gv.getCurrentLevel());
 		assertEquals(0,gv.getHighScore());
 	}
 	
